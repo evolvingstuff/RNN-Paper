@@ -45,6 +45,9 @@ class AbsDiagRNNCell(torch.nn.Module):
 		h1 = torch.abs(self.IH(x0)+self.HH*h0)
 		return h1
 
+	def clamp(self):
+		self.HH.data = torch.clamp(self.HH.data, -1.0, 1.0)
+
 class AbsDiagNet(torch.nn.Module):
 
 	def __init__(self, input_size, hidden_size, output_size):
@@ -55,8 +58,6 @@ class AbsDiagNet(torch.nn.Module):
 
 	def forward(self, X):
 		seq_length, batch_size, input_size = X.size()
-		#print(X.size())
-
 		h = torch.zeros(batch_size, self.hidden_size)
 		for step in X:
 			h = self.rnn(step, h)
@@ -64,7 +65,7 @@ class AbsDiagNet(torch.nn.Module):
 		return Y
 
 	def clamp(self):
-		self.rnn.HH.data = torch.clamp(self.rnn.HH.data, -1.0, 1.0)
+		self.rnn.clamp()
 
 class LSTMNet(torch.nn.Module):
 
@@ -87,9 +88,11 @@ if __name__ == '__main__':
 	print('')
 	print('')
 	print('-----------------------------------')
-	print('AbsDiagRNNCell demo')
+	print('AbsDiagRNNCell seq parity demo')
 
 	use_abs_diag_rnn = True # False -> use lstm
+
+	norm_clip = 1.0
 
 	seq_length = 1000
 	batch_size = 100
@@ -111,14 +114,14 @@ if __name__ == '__main__':
 	print('')
 	print('')
 
-	for t in range(5000):
+	for t in range(50):
 		bX, bY = sequentialParityBatch(seq_length, batch_size)
 		pred_bY = net(bX)
 		loss = loss_fn(pred_bY, bY)
-		print(t, loss.item())
+		print('timestep: {:d}\tMSE loss: {:f}'.format(t, loss.item()))
 		optimizer.zero_grad()
 		loss.backward()
-		torch.nn.utils.clip_grad_norm_(net.parameters(), 1.0)
+		torch.nn.utils.clip_grad_norm_(net.parameters(), norm_clip)
 		optimizer.step()
 		if use_abs_diag_rnn:
 			net.clamp()
