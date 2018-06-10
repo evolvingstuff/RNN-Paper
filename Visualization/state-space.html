@@ -5,8 +5,9 @@
 </head>
 <body style='font-family:Courier New'>
 	State Space Visualization<br>
-	X = <input id='inp_x' type='text' value='1'><br>
-	Y = <input type="range" id='inp_y' min=-1000 max=1000 step=1 value=0><br>
+	A = <input type="range" id='inp_alpha' min=-1000 max=1000 step=1 value=1000><br>
+	B = <input type="range" id='inp_beta' min=-1000 max=1000 step=1 value=0><br>
+	R = <input type="range" id='inp_rec' min=-1000 max=1000 step=1 value=0><br>
 	<canvas id='cnvs' width=2000 height=500 style='border: 1px solid black;'>
 	</canvas>
 	<script>
