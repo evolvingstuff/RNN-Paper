@@ -12,15 +12,16 @@ function render() {
 	let alpha = parseFloat($('#inp_alpha').val())/1000;
 	let beta = parseFloat($('#inp_beta').val())/1000;
 	let rec = parseFloat($('#inp_rec').val())/1000;
+	let flipped = document.getElementById('checkBox').checked;
 
 	let ctx = document.getElementById('cnvs').getContext('2d');
 	ctx.fillStyle = 'white';
 	ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-	extend(ctx, 0, alpha, beta, rec, 0);
+	extend(ctx, 0, alpha, beta, rec, 0, flipped);
 }
 
-function extend(ctx, loc, alpha, beta, rec, depth) {
+function extend(ctx, loc, alpha, beta, rec, depth, flipped) {
 
 	if (depth >= MAX_DEPTH) {
 		return;
@@ -45,7 +46,7 @@ function extend(ctx, loc, alpha, beta, rec, depth) {
 	ctx.arc(x, y, r, Math.PI, 0);
 	ctx.stroke();
 
-	extend(ctx, Math.abs(alpha + rec*loc), alpha, beta, rec, depth+1);
+	extend(ctx, Math.abs(alpha + rec*loc), alpha, beta, rec, depth+1, flipped);
 
 	//neg stroke
 	ctx.beginPath();
@@ -61,11 +62,15 @@ function extend(ctx, loc, alpha, beta, rec, depth) {
 	r = Math.abs(from - to)/2;
 	x = (from+to)/2 + OFFSET;
 	y = HEIGHT/2;
-	//ctx.arc(x, y, r, Math.PI, 0);
-	ctx.arc(x, y, r, 0, Math.PI);
+	if (flipped) {
+		ctx.arc(x, y, r, 0, Math.PI);
+	}
+	else {
+		ctx.arc(x, y, r, Math.PI, 0);
+	}
 	ctx.stroke();
 
-	extend(ctx, Math.abs(beta + rec*loc), alpha, beta, rec, depth+1);
+	extend(ctx, Math.abs(beta + rec*loc), alpha, beta, rec, depth+1, flipped);
 }
 
 function init() {
@@ -73,6 +78,7 @@ function init() {
 	$('#inp_alpha').on('input', render);
 	$('#inp_beta').on('input', render);
 	$('#inp_rec').on('input', render);
+	$('#checkBox').on('change', render);
 
 	render();
 }
