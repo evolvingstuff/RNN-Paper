@@ -35,6 +35,7 @@ class AbsDiagRNNCell(torch.nn.Module):
 		self.hidden_size = hidden_size
 		self.IH = nn.Linear(input_size, hidden_size, bias=False)
 		self.HH = nn.Parameter(torch.ones((hidden_size)))
+		#nn.init.normal_(self.IH.weight, mean=0.0, std=0.01)
 
 	def forward(self, x0, h0):
 		input_batch_size, input_size = x0.size()
@@ -55,6 +56,8 @@ class AbsDiagNet(torch.nn.Module):
 		self.hidden_size = hidden_size
 		self.rnn = AbsDiagRNNCell(input_size, hidden_size)
 		self.HO = nn.Linear(hidden_size, output_size, bias=True)
+		#nn.init.normal_(self.HO.weight, mean=0.0, std=0.01)
+		#nn.init.normal_(self.HO.bias, mean=0.0, std=0.01)
 
 	def forward(self, X):
 		seq_length, batch_size, input_size = X.size()
@@ -92,7 +95,7 @@ if __name__ == '__main__':
 
 	use_abs_diag_rnn = True # False -> use lstm
 
-	norm_clip = 1.0
+	norm_clip = 1.0 #1.0
 
 	seq_length = 1000
 	batch_size = 100
@@ -107,21 +110,43 @@ if __name__ == '__main__':
 
 	print('Sequential parity, length = ' + str(seq_length))
 
-	loss_fn = nn.MSELoss()
+	print('')
+	print('')
+
+	testX, testY = sequentialParityBatch(seq_length, batch_size)
+
+	prev_err = 0
+
 	optimizer = torch.optim.RMSprop(net.parameters())
 	#optimizer = torch.optim.Adam(net.parameters())
 
-	print('')
-	print('')
+	readout = None
+	#loss_fn = nn.MSELoss()
+	loss_fn = nn.BCEWithLogitsLoss()
 
-	for t in range(50):
-		bX, bY = sequentialParityBatch(seq_length, batch_size)
-		pred_bY = net(bX)
-		loss = loss_fn(pred_bY, bY)
-		print('timestep: {:d}\tMSE loss: {:f}'.format(t, loss.item()))
+	for t in range(100):
+		trainX, trainY = sequentialParityBatch(seq_length, batch_size)
+		if readout != None:
+			predictedY = readout(net(trainX))
+		else:
+			predictedY = net(trainX)
+		loss = loss_fn(predictedY, trainY)
 		optimizer.zero_grad()
 		loss.backward()
 		torch.nn.utils.clip_grad_norm_(net.parameters(), norm_clip)
 		optimizer.step()
 		if use_abs_diag_rnn:
 			net.clamp()
+
+		if readout != None:
+			predictedY = readout(net(testX))
+		else:
+			predictedY = net(testX)
+		loss = loss_fn(predictedY, testY)
+		print('timestep: {:d}\ttest loss: {:f}'.format(t, loss.item()))
+		if loss.item() == prev_err:
+			print('No change?')
+			print('IH: ' + str(net.rnn.IH.weight))
+			print('HO: ' + str(net.HO.weight))
+			break
+		prev_err = loss.item()
