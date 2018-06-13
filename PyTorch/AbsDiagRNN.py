@@ -186,7 +186,7 @@ if __name__ == '__main__':
 	print('RNN demo')
 
 	SANITY_CHECK = False
-	seed = 132 #128
+	seed = 140 #138, 139
 	if seed != None:
 		random.seed(seed)
 		torch.manual_seed(seed)
@@ -195,12 +195,12 @@ if __name__ == '__main__':
 	use_abs_diag_rnn = True # False -> use lstm
 
 	global_norm_clip = 30.0 #TODO
-	local_grad_clip = 1.0
+	local_grad_clip = 1.0 # 1.0 #TODO
 
-	seq_length = 300 #TODO
+	seq_length = 1000 #TODO
 	total_training_examples = 1000 #1000
 	show_every = 50
-	batch_size_train = 20
+	batch_size_train = 50 #TODO: different than the Java implementation
 	batch_size_test = 1000
 	gate_size = 20
 	hidden_size = 40
@@ -235,7 +235,7 @@ if __name__ == '__main__':
 	print('')
 
 	optimizer = torch.optim.RMSprop(net.parameters(), lr=lr, momentum=momentum, alpha=alpha, weight_decay=weight_decay)
-	#optimizer = torch.optim.Adam(net.parameters(), lr = 0.0001, weight_decay=0.9995)
+	#optimizer = torch.optim.Adam(net.parameters(), lr = 0.0001, weight_decay=0.9999)
 
 	loss_fn = nn.MSELoss()
 	#loss_fn = nn.BCEWithLogitsLoss()
@@ -246,13 +246,13 @@ if __name__ == '__main__':
 		trainX, trainY, _ = batchGenerator(seq_length, batch_size_train, sequence_generator)
 		training_examples.append((trainX, trainY))
 
-
 	for t in range(timesteps):
 
 		if shuffle_training_examples:
 			random.shuffle(training_examples)
 
 		s = 0
+
 		for example in training_examples:
 
 			trainX, trainY = example[0], example[1]
@@ -264,7 +264,7 @@ if __name__ == '__main__':
 			loss.backward()
 			
 			#Important to apply both kinds of gradient clipping
-			torch.nn.utils.clip_grad_norm_(net.parameters(), global_norm_clip)
+			norm = torch.nn.utils.clip_grad_norm_(net.parameters(), global_norm_clip)
 			torch.nn.utils.clip_grad_value_(net.parameters(), local_grad_clip)
 
 			optimizer.step()
