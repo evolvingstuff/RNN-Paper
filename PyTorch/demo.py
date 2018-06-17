@@ -16,7 +16,7 @@ if __name__ == '__main__':
 	print('RNN demo')
 
 	SANITY_CHECK = False
-	seed = 140 #138, 139
+	seed = 42 #138, 139
 	if seed != None:
 		random.seed(seed)
 		torch.manual_seed(seed)
@@ -27,10 +27,10 @@ if __name__ == '__main__':
 	global_norm_clip = 30.0 #TODO
 	local_grad_clip = 1.0 # 1.0 #TODO
 
-	seq_length = 1000 #TODO
+	seq_length = 500 #TODO
 	total_training_examples = 1000 #1000
 	show_every = 50
-	batch_size_train = 50 #TODO: different than the Java implementation
+	batch_size_train = 50 #50 #TODO: different than the Java implementation
 	batch_size_test = 1000
 	gate_size = 20
 	hidden_size = 40

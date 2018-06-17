@@ -12,6 +12,9 @@ class AbsDiagCell(torch.nn.Module):
 		super(AbsDiagCell, self).__init__()
 		self.IH = nn.Linear(input_size, hidden_size, bias=False)
 		self.HH = nn.Parameter(torch.ones((hidden_size)))
+		for i in range(hidden_size):
+			self.HH.data[i] = 0.99
+		self.debug_mode = False
 
 	def forward(self, x, h):
 		return torch.abs(self.IH(x)+self.HH*h)
@@ -30,9 +33,17 @@ class AbsDiagNet(torch.nn.Module):
 	def forward(self, X):
 		seq_length, batch_size, input_size = X.size()
 		h = torch.zeros(batch_size, self.hidden_size)
+		t = 0
 		for step in X:
 			h = self.recurrent_layer(step, h)
+			if self.debug_mode:
+				print('['+str(t)+']')
+				print('\tinput: ' + str(step))
+				print('\thiddn: ' + str(h))
+			t += 1
 		Y = self.HO(h)
+		if self.debug_mode:
+			print('\toutpt: ' + str(Y))
 		return Y
 
 	def clamp(self):
