@@ -2,25 +2,7 @@ import torch
 from torch.optim.optimizer import Optimizer
 
 class RMSpropclipped(Optimizer):
-    """Implements RMSprop algorithm.
-
-    Proposed by G. Hinton in his
-    `course <http://www.cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf>`_.
-
-    The centered version first appears in `Generating Sequences
-    With Recurrent Neural Networks <https://arxiv.org/pdf/1308.0850v5.pdf>`_.
-
-    Arguments:
-        params (iterable): iterable of parameters to optimize or dicts defining
-            parameter groups
-        lr (float, optional): learning rate (default: 1e-2)
-        momentum (float, optional): momentum factor (default: 0)
-        alpha (float, optional): smoothing constant (default: 0.99)
-        eps (float, optional): term added to the denominator to improve
-            numerical stability (default: 1e-8)
-        centered (bool, optional) : if ``True``, compute the centered RMSProp,
-            the gradient is normalized by an estimation of its variance
-        weight_decay (float, optional): weight decay (L2 penalty) (default: 0)
+    """Modification of the default RMSprop implemnetation in PyTorch
 
     """
 
@@ -73,6 +55,7 @@ class RMSpropclipped(Optimizer):
                     state['square_avg'] = torch.zeros_like(p.data)
 
                 square_avg = state['square_avg']
+
                 alpha = group['alpha']
 
                 state['step'] += 1

@@ -8,12 +8,12 @@ import math, random
 
 class AbsDiagCell(torch.nn.Module):
 
-	def __init__(self, input_size, hidden_size):
+	def __init__(self, input_size, hidden_size, init_weight_recur):
 		super(AbsDiagCell, self).__init__()
 		self.IH = nn.Linear(input_size, hidden_size, bias=False)
 		self.HH = nn.Parameter(torch.ones((hidden_size)))
 		for i in range(hidden_size):
-			self.HH.data[i] = 0.99
+			self.HH.data[i] = init_weight_recur
 		self.debug_mode = False
 
 	def forward(self, x, h):
@@ -24,10 +24,10 @@ class AbsDiagCell(torch.nn.Module):
 
 class AbsDiagNet(torch.nn.Module):
 
-	def __init__(self, input_size, hidden_size, output_size):
+	def __init__(self, input_size, hidden_size, output_size, init_weight_recur=0.99):
 		super(AbsDiagNet, self).__init__()
 		self.hidden_size = hidden_size
-		self.recurrent_layer = AbsDiagCell(input_size, hidden_size)
+		self.recurrent_layer = AbsDiagCell(input_size, hidden_size, init_weight_recur)
 		self.HO = nn.Linear(hidden_size, output_size, bias=True)
 
 	def forward(self, X):
@@ -51,12 +51,12 @@ class AbsDiagNet(torch.nn.Module):
 
 class AbsDiagNetGated(torch.nn.Module):
 
-	def __init__(self, input_size, gate_size, hidden_size, output_size):
+	def __init__(self, input_size, gate_size, hidden_size, output_size, init_weight_recur=0.99):
 		super(AbsDiagNetGated, self).__init__()
 		self.hidden_size = hidden_size
 		self.relu = nn.ReLU()
 		self.IH = nn.Linear(input_size, gate_size, bias=False) #TODO: yes or no?
-		self.recurrent_layer = AbsDiagCell(gate_size, hidden_size)
+		self.recurrent_layer = AbsDiagCell(gate_size, hidden_size, init_weight_recur)
 		self.HO = nn.Linear(hidden_size, output_size, bias=True)
 		
 	def forward(self, X):

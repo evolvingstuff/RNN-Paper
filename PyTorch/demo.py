@@ -18,7 +18,7 @@ if __name__ == '__main__':
 	print('RNN demo')
 
 	SANITY_CHECK = False
-	seed = 44
+	seed = 45
 	if seed != None:
 		random.seed(seed)
 		torch.manual_seed(seed)
@@ -29,15 +29,17 @@ if __name__ == '__main__':
 	global_norm_clip = 30.0 #TODO
 	local_grad_clip = 1.0
 
-	seq_length = 500 #TODO
+	seq_length = 1000 #TODO
 	total_training_examples = 1000 #1000
 	show_every = 100 #50
-	batch_size_train = 1 #50 #TODO: different than the Java implementation
+	batch_size_train = 50 #50 #TODO: different than the Java implementation
 	batch_size_test = 1000
 	gate_size = 20
 	hidden_size = 40
 
 	shuffle_training_examples = False
+
+	init_weight_recur = 0.999 # TODO
 
 	input_size = 2 #TODO
 	output_size = 1
@@ -49,12 +51,12 @@ if __name__ == '__main__':
 
 	if use_abs_diag_rnn:
 		#net = AbsDiagNet(input_size,hidden_size,output_size) #TODO
-		net = AbsDiagNetGated(input_size, gate_size, hidden_size, output_size)
+		net = AbsDiagNetGated(input_size, gate_size, hidden_size, output_size, init_weight_recur)
 		print('using Abs Diag Net')
 		pprint(vars(net))
 		pprint(vars(net.recurrent_layer))
 	else:
-		net = LSTMNet(input_size, hidden_size, output_size)
+		net = LSTMNet(input_size, hidden_size, output_size, init_weight_recur)
 		print('using LSTM')
 
 	#sequence_generator = sequentialParitySequenceGenerator #TODO
