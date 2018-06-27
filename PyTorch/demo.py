@@ -3,10 +3,12 @@ import torch
 from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
+#import torch.optim as optim
+from optimizer.rmspropclipped import *
 import math, random
 from models.models import *
 from datasets.datasets import *
+from pprint import pprint
 
 if __name__ == '__main__':
 
@@ -16,7 +18,7 @@ if __name__ == '__main__':
 	print('RNN demo')
 
 	SANITY_CHECK = False
-	seed = 42 #138, 139
+	seed = 44
 	if seed != None:
 		random.seed(seed)
 		torch.manual_seed(seed)
@@ -25,12 +27,12 @@ if __name__ == '__main__':
 	use_abs_diag_rnn = True # False -> use lstm
 
 	global_norm_clip = 30.0 #TODO
-	local_grad_clip = 1.0 # 1.0 #TODO
+	local_grad_clip = 1.0
 
 	seq_length = 500 #TODO
 	total_training_examples = 1000 #1000
-	show_every = 50
-	batch_size_train = 50 #50 #TODO: different than the Java implementation
+	show_every = 100 #50
+	batch_size_train = 1 #50 #TODO: different than the Java implementation
 	batch_size_test = 1000
 	gate_size = 20
 	hidden_size = 40
@@ -41,8 +43,7 @@ if __name__ == '__main__':
 	output_size = 1
 	timesteps = 1000
 
-	lr = 0.001
-	momentum = 0
+	learning_rate = 0.001
 	alpha = 0.999
 	weight_decay = 0.001
 
@@ -50,6 +51,8 @@ if __name__ == '__main__':
 		#net = AbsDiagNet(input_size,hidden_size,output_size) #TODO
 		net = AbsDiagNetGated(input_size, gate_size, hidden_size, output_size)
 		print('using Abs Diag Net')
+		pprint(vars(net))
+		pprint(vars(net.recurrent_layer))
 	else:
 		net = LSTMNet(input_size, hidden_size, output_size)
 		print('using LSTM')
@@ -64,8 +67,7 @@ if __name__ == '__main__':
 	print('task: ' +task_name+', length = ' + str(seq_length))
 	print('')
 
-	optimizer = torch.optim.RMSprop(net.parameters(), lr=lr, momentum=momentum, alpha=alpha, weight_decay=weight_decay)
-	#optimizer = torch.optim.Adam(net.parameters(), lr = 0.0001, weight_decay=0.9999)
+	optimizer = RMSpropclipped(net.parameters(), lr=learning_rate, alpha=alpha, weight_decay=weight_decay, clip=local_grad_clip)
 
 	loss_fn = nn.MSELoss()
 	#loss_fn = nn.BCEWithLogitsLoss()
@@ -95,7 +97,6 @@ if __name__ == '__main__':
 			
 			#Important to apply both kinds of gradient clipping
 			norm = torch.nn.utils.clip_grad_norm_(net.parameters(), global_norm_clip)
-			torch.nn.utils.clip_grad_value_(net.parameters(), local_grad_clip)
 
 			optimizer.step()
 
