@@ -3,8 +3,7 @@ from torch.optim.optimizer import Optimizer
 
 class RMSpropclipped(Optimizer):
     """Modification of the default RMSprop implemnetation in PyTorch
-
-    """
+       to allow gradient clipping in numerator"""
 
     def __init__(self, params, lr=1e-3, alpha=0.999, eps=1e-8, weight_decay=0.001, clip=1.0):
         if not 0.0 <= lr:
@@ -25,13 +24,6 @@ class RMSpropclipped(Optimizer):
         super(RMSpropclipped, self).__setstate__(state)
 
     def step(self, closure=None):
-
-        """Performs a single optimization step.
-
-        Arguments:
-            closure (callable, optional): A closure that reevaluates the model
-                and returns the loss.
-        """
 
         loss = None
         if closure is not None:
@@ -55,18 +47,14 @@ class RMSpropclipped(Optimizer):
                     state['square_avg'] = torch.zeros_like(p.data)
 
                 square_avg = state['square_avg']
-
                 alpha = group['alpha']
-
                 state['step'] += 1
 
                 if group['weight_decay'] != 0:
                     grad = grad.add(group['weight_decay'], p.data)
 
                 square_avg.mul_(alpha).addcmul_(1 - alpha, grad, grad)
-
-                avg = square_avg.sqrt().add_(group['eps']) #TODO: eps added outside of sqrt
-                
+                avg = square_avg.sqrt().add_(group['eps']) #TODO: eps added outside of sqrt?
                 p.data.addcdiv_(-group['lr'], clipped_grad, avg)
 
         return loss
