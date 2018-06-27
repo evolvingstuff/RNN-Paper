@@ -3,7 +3,6 @@ import torch
 from torch.autograd import Variable
 import torch.nn as nn
 import torch.nn.functional as F
-#import torch.optim as optim
 from optimizer.rmspropclipped import *
 import math, random
 from models.models import *
@@ -97,11 +96,13 @@ if __name__ == '__main__':
 
 			loss.backward()
 			
-			#Important to apply both kinds of gradient clipping
+			#Constraint #1: Norm of entire gradient is clipped
 			norm = torch.nn.utils.clip_grad_norm_(net.parameters(), global_norm_clip)
 
+			#Constraint #2: Element-wise gradient clipping is applied inside this altered optimizer step
 			optimizer.step()
 
+			#Constraint #3: Recurrent weights are clipped to range of [-1, 1]
 			if use_abs_diag_rnn:
 				net.clamp()
 
