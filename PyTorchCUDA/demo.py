@@ -62,6 +62,8 @@ if __name__ == '__main__':
 		net = LSTMNet(input_size, hidden_size, output_size, init_weight_recur)
 		print('using LSTM')
 
+	net.cuda()
+
 	#sequence_generator = sequentialParitySequenceGenerator #TODO
 	sequence_generator = pathologicalXorGenerator
 	#sequence_generator = pathologicalAddingGenerator

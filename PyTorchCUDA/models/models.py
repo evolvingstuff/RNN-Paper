@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import math, random
+import code
 
 class DiagnetCell(torch.nn.Module):
 
@@ -53,8 +54,10 @@ class DiagnetGated(torch.nn.Module):
 		
 	def forward(self, X):
 		seq_length, batch_size, input_size = X.size()
-		h = torch.zeros(batch_size, self.hidden_size)
+		h = torch.zeros(batch_size, self.hidden_size).cuda()
 		for step in X:
+			#step_ = step.cuda()
+			#code.interact(local=locals())
 			g = self.relu(self.IH(step))
 			h = self.recurrent_layer(g, h)
 		Y = self.HO(h)

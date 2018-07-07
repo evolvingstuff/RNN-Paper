@@ -90,8 +90,8 @@ def batchGenerator(sequence_length, batch_size, sequence_generator):
 	bX, bY = [], []
 	for b in range(batch_size):
 		X, Y, task_name = sequence_generator(sequence_length)
-		bX.append(X)
-		bY.append(Y)
+		bX.append(X.cuda())
+		bY.append(Y.cuda())
 	return torch.stack(bX,1), torch.stack(bY,0), task_name
 
 
