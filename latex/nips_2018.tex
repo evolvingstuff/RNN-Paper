@@ -1,5 +1,7 @@
 \documentclass{article}
-
+%\usepackage[backend=bibtex,style=verbose-trad2]{biblatex}
+%\bibliography{refs.bib}
+%\bibliographystyle{ieeetr}
 % ready for submission
 \usepackage{nips_2018}
 
@@ -82,7 +84,7 @@ Tom Lahore
 \nolinenumbers
 \begin{abstract}
 
-  Recurrent Neural Networks have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. We demonstrate in a variety of benchmarking tasks that learning becomes possible with delays of over 10,000 time steps, representing substantial gains over existing RNN designs.  Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example version of the bAbI task over LSTM and GRU. In addition, Diagnet scores higher in testing accuracy on 15 out of bAbI 20  bAbI tasks, by margins of 3-30\%, while supporting more hidden layers than many other RNN architectures. 
+  Recurrent Neural Networks \cite{Mozer94neuralnet} have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. We demonstrate in a variety of benchmarking tasks that learning becomes possible with delays of over 10,000 time steps, representing substantial gains over existing RNN designs.  Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example version of the bAbI task over LSTM and GRU. In addition, Diagnet scores higher in testing accuracy on 15 out of bAbI 20  bAbI tasks, by margins of 3-30\%, while supporting more hidden layers than many other RNN architectures. 
 
 %  The abstract paragraph should be indented \nicefrac{1}{2}~inch
 %  (3~picas) on both the left- and right-hand margins. Use 10~point
@@ -109,65 +111,65 @@ Vanishing gradients due to the nonlinearities used (e.g. ReLU)
 What we found Results were...impressive
 Paper Outline in brief In the following paper, we present a brief outline of foundational work in the problem space to contextualize Diagnet’s emergence in RNN design.  Then, we present a discussion of the architecture and mechanisms of Diagnet, along with a useful visual tool for building an intuitive understanding of Diagnet’s units and their behavior.  Next we present a series of common benchmarking tasks, the results of each task, and finally conclude with a discussion of Diagnet’s performance and behavior based on experimental results.  We hope to offer an interesting and powerful new tool for sequence modeling in our introduction of Diagnet, while laying the groundwork for further exploration, architectural innovation, and interaction with the ML community.
 
-\subsection{Style}
-
-Papers to be submitted to NIPS 2018 must be prepared according to the
-instructions presented here. Papers may only be up to eight pages
-long, including figures. Additional pages \emph{containing only
-  acknowledgments and/or cited references} are allowed. Papers that
-exceed eight pages of content (ignoring references) will not be
-reviewed, or in any other way considered for presentation at the
-conference.
-
-The margins in 2018 are the same as since 2007, which allow for
-$\sim$$15\%$ more words in the paper compared to earlier years.
-
-Authors are required to use the NIPS \LaTeX{} style files obtainable
-at the NIPS website as indicated below. Please make sure you use the
-current files and not previous versions. Tweaking the style files may
-be grounds for rejection.
-
-\subsection{Retrieval of style files}
-
-The style files for NIPS and other conference information are
-available on the World Wide Web at
-\begin{center}
-  \url{http://www.nips.cc/}
-\end{center}
-The file \verb+nips_2018.pdf+ contains these instructions and
-illustrates the various formatting requirements your NIPS paper must
-satisfy.
-
-The only supported style file for NIPS 2018 is \verb+nips_2018.sty+,
-rewritten for \LaTeXe{}.  \textbf{Previous style files for \LaTeX{}
-  2.09, Microsoft Word, and RTF are no longer supported!}
-
-The \LaTeX{} style file contains three optional arguments: \verb+final+,
-which creates a camera-ready copy, \verb+preprint+, which creates a
-preprint for submission to, e.g., arXiv, and \verb+nonatbib+, which will
-not load the \verb+natbib+ package for you in case of package clash.
-
-\paragraph{New preprint option for 2018}
-If you wish to post a preprint of your work online, e.g., on arXiv,
-using the NIPS style, please use the \verb+preprint+ option. This will
-create a nonanonymized version of your work with the text
-``Preprint. Work in progress.''  in the footer. This version may be
-distributed as you see fit. Please \textbf{do not} use the
-\verb+final+ option, which should \textbf{only} be used for papers
-accepted to NIPS.
-
-At submission time, please omit the \verb+final+ and \verb+preprint+
-options. This will anonymize your submission and add line numbers to aid
-review. Please do \emph{not} refer to these line numbers in your paper
-as they will be removed during generation of camera-ready copies.
-
-The file \verb+nips_2018.tex+ may be used as a ``shell'' for writing
-your paper. All you have to do is replace the author, title, abstract,
-and text of the paper with your own.
-
-The formatting instructions contained in these style files are
-summarized in Sections \ref{gen_inst}, \ref{headings}, and
-\ref{others} below.
+%\subsection{Style}
+%
+%Papers to be submitted to NIPS 2018 must be prepared according to the
+%instructions presented here. Papers may only be up to eight pages
+%long, including figures. Additional pages \emph{containing only
+%  acknowledgments and/or cited references} are allowed. Papers that
+%exceed eight pages of content (ignoring references) will not be
+%reviewed, or in any other way considered for presentation at the
+%conference.
+%
+%The margins in 2018 are the same as since 2007, which allow for
+%$\sim$$15\%$ more words in the paper compared to earlier years.
+%
+%Authors are required to use the NIPS \LaTeX{} style files obtainable
+%at the NIPS website as indicated below. Please make sure you use the
+%current files and not previous versions. Tweaking the style files may
+%be grounds for rejection.
+%
+%\subsection{Retrieval of style files}
+%
+%The style files for NIPS and other conference information are
+%available on the World Wide Web at
+%\begin{center}
+%  \url{http://www.nips.cc/}
+%\end{center}
+%The file \verb+nips_2018.pdf+ contains these instructions and
+%illustrates the various formatting requirements your NIPS paper must
+%satisfy.
+%
+%The only supported style file for NIPS 2018 is \verb+nips_2018.sty+,
+%rewritten for \LaTeXe{}.  \textbf{Previous style files for \LaTeX{}
+%  2.09, Microsoft Word, and RTF are no longer supported!}
+%
+%The \LaTeX{} style file contains three optional arguments: \verb+final+,
+%which creates a camera-ready copy, \verb+preprint+, which creates a
+%preprint for submission to, e.g., arXiv, and \verb+nonatbib+, which will
+%not load the \verb+natbib+ package for you in case of package clash.
+%
+%\paragraph{New preprint option for 2018}
+%If you wish to post a preprint of your work online, e.g., on arXiv,
+%using the NIPS style, please use the \verb+preprint+ option. This will
+%create a nonanonymized version of your work with the text
+%``Preprint. Work in progress.''  in the footer. This version may be
+%distributed as you see fit. Please \textbf{do not} use the
+%\verb+final+ option, which should \textbf{only} be used for papers
+%accepted to NIPS.
+%
+%At submission time, please omit the \verb+final+ and \verb+preprint+
+%options. This will anonymize your submission and add line numbers to aid
+%review. Please do \emph{not} refer to these line numbers in your paper
+%as they will be removed during generation of camera-ready copies.
+%
+%The file \verb+nips_2018.tex+ may be used as a ``shell'' for writing
+%your paper. All you have to do is replace the author, title, abstract,
+%and text of the paper with your own.
+%
+%The formatting instructions contained in these style files are
+%summarized in Sections \ref{gen_inst}, \ref{headings}, and
+%\ref{others} below.
 
 \section{Previous Work}
 \label{gen_inst}
@@ -377,25 +379,38 @@ This suggests that Diagnet may represent
 \section{Conclusion}
 Here we outline the features, mechanisms, and benchmarking performance of Diagnet. Results were robust over a variety of tasks, most notably in bAbI question-answering tasks, where Diagnet’s accuracy scores showed up to 36\% percent improvement over existing architectures such as LSTM and GRU.  While memory augmentation and attentional mechanisms offer clear advantages as architectural additions, we choose to focus on the core RNN functionality in this paper.  Future work may incorporate attentional mechanisms, memory augmentation, and additional task spaces such as semantic embeddings, genetic sequencing, and computer vision.  Diagnet’s novel architecture offers great flexibility in hidden layering, and number of steps in various memory tasks, as well as potential for distributed computing.  Due to the fact that Diagnet does not have gating mechanisms in its current iteration, it is largely input-driven, and tends to perform best in tasks where an output sequence is expected after arbitrary delays. The work presented here represents a first glance at Diagnet’s mechanisms and potential, which the authors hope to expand in future work. 
 
+To recap the core elements of Diagnet’s architecture: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example version of the bAbI task over LSTM and GRU. In addition, Diagnet scores higher in testing accuracy on 15 out of bAbI 20  bAbI tasks, by margins of 3-30%, while supporting more hidden layers than many other RNN architectures. 
+It’s super duper fast. Hadamard product FTW!!
+
+
+Speculate that Diagnet may turn out to be a good component to be used in more complex hybrid neural solutions, much like LSTM and GRU are used currently.
+
+Future directions? Add data augmentation, attentional mechanisms, small-worlds connectivity between nodes in hidden layer, better characterize the theoretical limitations of this architecture in terms of Turing completeness, grammars, etc..
+
+Limitations? Currently appears to only handle problems in which it is largely input driven. It will not do as well, I think, in situations where it is expected to produce sequences of outputs after arbitrary delays.
+(Suspect it could not handle a variation of pathological adding wherein you subtract the second flagged input rather than adding it. However, I’m not sure if LSTM or GRU can do this over long delays either…)
+
+Link to source code somewhere
+
 
 %The \verb+natbib+ package will be loaded for you by default.
 %Citations may be author/year or numeric, as long as you maintain
 %internal consistency.  As to the format of the references themselves,
 %any style is acceptable as long as it is used consistently.
 
-%The documentation for \verb+natbib+ may be found at
-%\begin{center}
-%  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-%\end{center}
-%Of note is the command \verb+\citet+, which produces citations
-%appropriate for use in inline text.  For example,
-%\begin{verbatim}
-%   \citet{hasselmo} investigated\dots
-%\end{verbatim}
-%produces
-%\begin{quote}
-%  Hasselmo, et al.\ (1995) investigated\dots
-%\end{quote}
+The documentation for \verb+natbib+ may be found at
+\begin{center}
+  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
+\end{center}
+Of note is the command \verb+\citet+, which produces citations
+appropriate for use in inline text.  For example,
+\begin{verbatim}
+   \citet{hasselmo} investigated\dots
+\end{verbatim}
+produces
+\begin{quote}
+  Hasselmo, et al.\ (1995) investigated\dots
+\end{quote}
 %
 %If you wish to load the \verb+natbib+ package with options, you may
 %add the following before loading the \verb+nips_2018+ package:
@@ -571,19 +586,30 @@ size to \verb+small+ (9 point) when listing the references. {\bf
 
 \small
 
-[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms
-for connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and
-T.K.\ Leen (eds.), {\it Advances in Neural Information Processing
-  Systems 7}, pp.\ 609--616. Cambridge, MA: MIT Press.
+@inproceedings{Fahlman1990TheRC,
+  title={The Recurrent Cascade-Correlation Architecture},
+  author={Scott E. Fahlman},
+  booktitle={NIPS},
+  year={1990}
+}
+\newpage
 
-[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS:
-  Exploring Realistic Neural Models with the GEneral NEural SImulation
-  System.}  New York: TELOS/Springer--Verlag.
 
-[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of
-learning and recall at excitatory recurrent synapses and cholinergic
-modulation in rat hippocampal region CA3. {\it Journal of
-  Neuroscience} {\bf 15}(7):5249-5262.
+%Fahlman, S.E. (1990). The Recurrent Cascade-Correlation Architecture. NIPS.
+%
+%[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms
+%for connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and
+%T.K.\ Leen (eds.), {\it Advances in Neural Information Processing
+%  Systems 7}, pp.\ 609--616. Cambridge, MA: MIT Press.
+%
+%[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS:
+%  Exploring Realistic Neural Models with the GEneral NEural SImulation
+%  System.}  New York: TELOS/Springer--Verlag.
+%
+%[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of
+%learning and recall at excitatory recurrent synapses and cholinergic
+%modulation in rat hippocampal region CA3. {\it Journal of
+%  Neuroscience} {\bf 15}(7):5249-5262.
 
 \nolinenumbers
 \end{document}
