@@ -1,7 +1,7 @@
 \documentclass{article}
 
 % ready for submission
-\usepackage{nips_2018}
+\usepackage[preprint]{nips_2018}
 
 % to compile a preprint version, e.g., for submission to arXiv, add
 % add the [preprint] option:
@@ -24,6 +24,14 @@
 
 %
  \title{Diagnet: A New Recurrent Neural Network Architecture}
+ 
+ \author{
+	Thomas Lahore\\
+	\texttt{tom.lahore@gmail.com}\\
+	\And
+	Morgan Weaver\\
+	\texttt{morganjweaver@gmail.com}
+ }
 
 % The \author macro works with any number of authors. There are two
 % commands used to separate the names and addresses of multiple
@@ -68,7 +76,6 @@
 
 \begin{document}
 \maketitle
-\nolinenumbers
 \begin{abstract}
 
   Recurrent Neural Networks have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. We demonstrate in a variety of benchmarking tasks that learning becomes possible with delays of over 10,000 time steps, representing substantial gains over existing RNN designs.  Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example version of the bAbI task over LSTM and GRU. In addition, Diagnet scores higher in testing accuracy on 15 out of bAbI 20  bAbI tasks, by margins of 3-30\%, while supporting more hidden layers than many other RNN architectures. 
@@ -574,6 +581,4 @@ learning and recall at excitatory recurrent synapses and cholinergic
 modulation in rat hippocampal region CA3. {\it Journal of
   Neuroscience} {\bf 15}(7):5249-5262.
 
-\nolinenumbers
 \end{document}
-\nolinenumbers
