@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.8.2)  2 AUG 2018 22:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.8.2)  2 AUG 2018 22:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -743,15 +743,22 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 578.
  (./nips_2018.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 578.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 578.
-Package rerunfilecheck Info: File `nips_2018.out' has not changed.
-(rerunfilecheck)             Checksum: 8B23D4E4BCE621B09A5AEAFBCC6E9498;1433.
+
+
+Package rerunfilecheck Warning: File `nips_2018.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `nips_2018.out':
+(rerunfilecheck)             Before: 8B3032A98A4C480DC522239BE37582CB;1304
+(rerunfilecheck)             After:  8B23D4E4BCE621B09A5AEAFBCC6E9498;1433.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 578.
  ) 
 Here is how much of TeX's memory you used:
- 7685 strings out of 494910
- 115439 string characters out of 6179837
- 228079 words of memory out of 5000000
- 10715 multiletter control sequences out of 15000+600000
+ 7683 strings out of 494910
+ 115407 string characters out of 6179837
+ 228076 words of memory out of 5000000
+ 10713 multiletter control sequences out of 15000+600000
  46971 words of font info for 141 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  31i,8n,35p,1283b,333s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -766,10 +773,10 @@ cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fon
 ts/type1/urw/times/utmri8a.pfb>
-Output written on nips_2018.pdf (6 pages, 133905 bytes).
+Output written on nips_2018.pdf (6 pages, 133813 bytes).
 PDF statistics:
- 209 PDF objects out of 1000 (max. 8388607)
- 158 compressed objects within 2 object streams
+ 203 PDF objects out of 1000 (max. 8388607)
+ 152 compressed objects within 2 object streams
  32 named destinations out of 1000 (max. 500000)
- 24745 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 24729 words of extra memory for PDF output out of 24883 (max. 10000000)
 
