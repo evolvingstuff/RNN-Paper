@@ -21,6 +21,8 @@
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
+\usepackage{tikz}
+\usepackage{standalone}
 
 %
  \title{Diagnet: A New Recurrent Neural Network Architecture}
@@ -213,7 +215,9 @@ Make a feature matrix showing what overlaps the various solutions have? That mig
 \label{headings}
 \begin{figure}
   \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+  %\includestandalone[width=\textwidth]{figures/diagnet1}
+  \includestandalone{nn}
+  
   \caption{Figure showing nice diagram of the architecture.}
 \end{figure}
 
