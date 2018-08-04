@@ -243,6 +243,12 @@ It is (almost) everywhere differentiable, with unit-length derivatives of either
 It is norm-preserving (and hence gradient preserving), both for each individual component of the vector, and also for the entire vector.
 The absolute value function cannot, by itself, cause gradients to explode, nor vanish.
 
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{images/state-space2.png}
+\caption{Absolute value dynamics}
+\end{figure}
+
 Generic restatements about why norm preservation is important when training recurrent neural networks.
 
 LSTM and GRU preserve the gradient over time by mostly avoiding the direct application of nonlinearities as much as possible. (ResNet is similar in this sense.) However, we speculate that many potentially useful algorithms or behaviors likely require the application of a very large number of computations/transformations, rather than simply preserving a small number of computations/transformations over large spans of time.
@@ -363,37 +369,34 @@ Reiterate, long period of time plus lots of computations. LSTM and GRU fail spec
 
 bAbI is a set of 20 synthetic NLP tasks put out by Facebook research (2015) which have been designed to test the ability to perform logical reasoning about text. Each task has been designed to require a particular set of capabilities to be solved; simple induction, deduction, remembering temporal ordering of facts, etc..
 
-An example:
-
+%TODO: how to make sure this table appears after the subsection?
 \begin{table}
-\caption{Example Q/A from bAbI problem set}
+\caption{Example from bAbI problem set}
 \centering
-\begin{tabular}{|l|l|}
+\begin{tabular}{|l|l|l|}
 \hline
-Question & Answer \\
+Fact & Question & Answer \\
 \hline
-Mary moved to the bathroom. & \\
-John went to the hallway. & \\
-Where is Mary? & bathroom \\
-Daniel went back to the hallway. & \\
-Sandra moved to the garden. & \\
-Where is Daniel? & hallway \\
-John moved to the office. & \\
-Sandra journeyed to the bathroom. & \\
-Where is Daniel? & hallway \\
-Mary moved to the hallway. & \\
-Daniel travelled to the office. & \\
-Where is Daniel? & office \\
-John went back to the garden. & \\
-John moved to the bedroom. & \\
-Where is Sandra? & bathroom \\
+Mary moved to the bathroom. & & \\
+John went to the hallway. & & \\
+ & Where is Mary? & bathroom \\
+Daniel went back to the hallway. & & \\
+Sandra moved to the garden. & & \\
+ & Where is Daniel? & hallway \\
+John moved to the office. & & \\
+Sandra journeyed to the bathroom. & & \\
+& Where is Daniel? & hallway \\
+Mary moved to the hallway. & & \\
+Daniel travelled to the office. & & \\
+& Where is Daniel? & office \\
+John went back to the garden. & & \\
+John moved to the bedroom. & & \\
+& Where is Sandra? & bathroom \\
 \hline
 
 \end{tabular}
 
 \end{table}
-
-
 
 In the accompanying paper, Weston et al introduce Memory Networks in order to overcome many of the shortcomings of a plain LSTM network. 
 
