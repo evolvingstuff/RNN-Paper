@@ -24,63 +24,21 @@
 \usepackage{tikz}
 \usepackage{standalone}
 
-%
- \title{Diagnet: A New Recurrent Neural Network Architecture}
+\title{Diagnet: A Fast New Recurrent Neural Network Architecture}
  
- \author{
-	Thomas Lahore\\
-	\texttt{tom.lahore@gmail.com}\\
-	\And
-	Morgan Weaver\\
-	\texttt{morganjweaver@gmail.com}
- }
-
-% The \author macro works with any number of authors. There are two
-% commands used to separate the names and addresses of multiple
-% authors: \And and \AND.
-%
-% Using \And between authors leaves it to LaTeX to determine where to
-% break the lines. Using \AND forces a line break at that point. So,
-% if LaTeX puts 3 of 4 authors names on the first line, and the last
-% on the second line, try using \AND instead of \And before the third
-% author name.
-
-%\author{
-%  Tom Lahore\thanks{Use footnote for providing further
-%    information about author (webpage, alternative
-%    address)---\emph{not} for acknowledging funding agencies.} \\
-%  Department of Computer Science\\
-%  Cranberry-Lemon University\\
-%  Pittsburgh, PA 15213 \\
-%  \texttt{hippo@cs.cranberry-lemon.edu} \\
-%  \And
-%  Morgan Weaver \\
-%  }
-  %% Affiliation \\
-  %% Address \\
-  %% \texttt{email} \\
-  %% \AND
-  %% Coauthor \\
-  %% Affiliation \\
-  %% Address \\
-  %% \texttt{email} \\
-  %% \And
-  %% Coauthor \\
-  %% Affiliation \\
-  %% Address \\
-  %% \texttt{email} \\
-  %% \And
-  %% Coauthor \\
-  %% Affiliation \\
-  %% Address \\
-  %% \texttt{email} \\
-
+\author{
+Thomas Lahore\\
+\texttt{tom.lahore@gmail.com}\\
+\And
+Morgan Weaver\\
+\texttt{morganjweaver@gmail.com}
+}
 
 \begin{document}
 \maketitle
 \begin{abstract}
 
-  Recurrent Neural Networks have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. We demonstrate in a variety of benchmarking tasks that learning becomes possible with delays of over 10,000 time steps, representing substantial gains over existing RNN designs.  Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example version of the bAbI task over LSTM and GRU. In addition, Diagnet scores higher in testing accuracy on 15 out of bAbI 20  bAbI tasks, by margins of 3-30\%, while supporting more hidden layers than many other RNN architectures. 
+  Recurrent Neural Networks have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. We demonstrate in a variety of benchmarking tasks that learning becomes possible with delays of over 10,000 time steps, representing substantial gains over existing RNN designs.  Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example version of the bAbI task over LSTM and GRU. In addition, Diagnet scores higher in testing accuracy on 15 out of bAbI 20  bAbI tasks, by margins of 3-30\%, while supporting more hidden neurons than fully-connected RNN architectures. 
 
 %  The abstract paragraph should be indented \nicefrac{1}{2}~inch
 %  (3~picas) on both the left- and right-hand margins. Use 10~point
@@ -99,51 +57,16 @@
 %\end{center}
 %
 %Please read the instructions below carefully and follow them faithfully.
-Importance of RNNs
-Recurrent Neural Networks represent one of the most important deep learning architectures in current use.  They are used for many tasks, such as time series prediction [REF] , unsegmented, connected handwriting recognition [REF], large-vocabulary speech recognition [REF], modeling chaotic phenomena [REF], language modeling and machine translation [REF], robot control [REF], Protein Homology Detection [REF], difficulties of training RNNs [REF], and vanishing/exploding gradient problems [REF]. 
+Recurrent Neural Networks represent one of the most important deep learning architectures in current use.  They are increasingly being used for many tasks, such as time series prediction [REF] , unsegmented, connected handwriting recognition [REF], large-vocabulary speech recognition [REF], modeling chaotic phenomena [REF], language modeling and machine translation [REF], robot control [REF], Protein Homology Detection [REF].
+ 
+ 
 Wikipedia: "A major problem with gradient descent for standard RNN architectures is that error gradients vanish exponentially quickly with the size of the time lag between important events.[34][67] LSTM combined with a BPTT/RTRL hybrid learning method attempts to overcome these problems.[6] "
 Vanishing gradients due to the nonlinearities used (e.g. ReLU)
-      Problem space We are interested in addressing two widely-cited [RED] pain points of RNN performance.  The first being the vanishing and exploding gradient problem [REF], and the second being performance over increasing time steps [REF].  We address these issues by implementing three as kjfhakdf that have not yet been exibited in combination in neural net design. 
+      
+We are interested in addressing two widely-cited [RED] pain points of RNN performance.  The first being the vanishing and exploding gradient problem [REF], and the second being performance over increasing time steps [REF].  We address these issues by implementing three as kjfhakdf that have not yet been exibited in combination in neural net design. 
 What we found Results were...impressive
-Paper Outline in brief In the following paper, we present a brief outline of foundational work in the problem space to contextualize Diagnet’s emergence in RNN design.  Then, we present a discussion of the architecture and mechanisms of Diagnet, along with a useful visual tool for building an intuitive understanding of Diagnet’s units and their behavior.  Next we present a series of common benchmarking tasks, the results of each task, and finally conclude with a discussion of Diagnet’s performance and behavior based on experimental results.  We hope to offer an interesting and powerful new tool for sequence modeling in our introduction of Diagnet, while laying the groundwork for further exploration, architectural innovation, and interaction with the ML community.
 
-\subsection{Style}
-
-Papers to be submitted to NIPS 2018 must be prepared according to the
-instructions presented here. Papers may only be up to eight pages
-long, including figures. Additional pages \emph{containing only
-  acknowledgments and/or cited references} are allowed. Papers that
-exceed eight pages of content (ignoring references) will not be
-reviewed, or in any other way considered for presentation at the
-conference.
-
-The margins in 2018 are the same as since 2007, which allow for
-$\sim$$15\%$ more words in the paper compared to earlier years.
-
-Authors are required to use the NIPS \LaTeX{} style files obtainable
-at the NIPS website as indicated below. Please make sure you use the
-current files and not previous versions. Tweaking the style files may
-be grounds for rejection.
-
-\subsection{Retrieval of style files}
-
-The style files for NIPS and other conference information are
-available on the World Wide Web at
-\begin{center}
-  \url{http://www.nips.cc/}
-\end{center}
-The file \verb+nips_2018.pdf+ contains these instructions and
-illustrates the various formatting requirements your NIPS paper must
-satisfy.
-
-The only supported style file for NIPS 2018 is \verb+nips_2018.sty+,
-rewritten for \LaTeXe{}.  \textbf{Previous style files for \LaTeX{}
-  2.09, Microsoft Word, and RTF are no longer supported!}
-
-The \LaTeX{} style file contains three optional arguments: \verb+final+,
-which creates a camera-ready copy, \verb+preprint+, which creates a
-preprint for submission to, e.g., arXiv, and \verb+nonatbib+, which will
-not load the \verb+natbib+ package for you in case of package clash.
+In the following paper, we present a brief outline of foundational work in the problem space to contextualize Diagnet’s emergence in RNN design.  Then, we present a discussion of the architecture and mechanisms of Diagnet, along with a useful visual tool for building an intuitive understanding of Diagnet’s units and their behavior.  Next we present a series of common benchmarking tasks, the results of each task, and finally conclude with a discussion of Diagnet’s performance and behavior based on experimental results.  We hope to offer an interesting and powerful new tool for sequence modeling in our introduction of Diagnet, while laying the groundwork for further exploration, architectural innovation, and interaction with the ML community.
 
 \paragraph{New preprint option for 2018}
 If you wish to post a preprint of your work online, e.g., on arXiv,
@@ -169,9 +92,7 @@ summarized in Sections \ref{gen_inst}, \ref{headings}, and
 
 \section{Previous Work}
 \label{gen_inst}
-It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982.  Subsequently, Schmidhuber [REF] developed the Neural History Compressor (1993) and was able to preserve information over time steps, while compressing information.  In 1991 Fallman developed the 
-
-Recurrent Cascade Correlation Algorithm (1991)--Fallman
+It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982. (TODO: mention Elman/Jordan networks?) Subsequently, Schmidhuber [REF] developed the Neural History Compressor (1993) and was able to preserve information over time steps, while compressing information.  In 1991 Fallman developed the Recurrent Cascade Correlation Algorithm (1991)--Fallman
 Add 1 hidden neuron at a time.  All else frozen.  Inputs go here.  Output of prev goes to new and also all inputs. Each new hidden neuron must be maximally correlated with current remaining err per step.  Now make recurrent: each neuron has single link to self.  Rinse n repeat algo; truncated backprop at the time bc feasible.  At time, proved not useful for certain grammars like seq parity (using saturating, not abs val fxn) First paper T knows of where neuron self-connected. (IndRNN first layer is the same)
 LSTM (1997)-gradient preservation. first really good thing for v/exp gradient problem.  Forgets/gates. 
 GRU (2014)-just ref it, no significant influence
@@ -188,28 +109,6 @@ Clipped Gradients (Paskanu, Mikolov, Bengio)
 
 Make a chart of architectures vs features?
 Make a feature matrix showing what overlaps the various solutions have? That might be of more interest, and faster than simply talking about all of them individually. We can still cite them.
-
-%The text must be confined within a rectangle 5.5~inches (33~picas)
-%wide and 9~inches (54~picas) long. The left margin is 1.5~inch
-%(9~picas).  Use 10~point type with a vertical spacing (leading) of
-%11~points.  Times New Roman is the preferred typeface throughout, and
-%will be selected for you by default.  Paragraphs are separated by
-%\nicefrac{1}{2}~line space (5.5 points), with no indentation.
-%
-%The paper title should be 17~point, initial caps/lower case, bold,
-%centered between two horizontal rules. The top rule should be 4~points
-%thick and the bottom rule should be 1~point thick. Allow
-%\nicefrac{1}{4}~inch space above and below the title to rules. All
-%pages should start at 1~inch (6~picas) from the top of the page.
-%
-%For the final version, authors' names are set in boldface, and each
-%name is centered above the corresponding address. The lead author's
-%name is to be listed first (left-most), and the co-authors' names (if
-%different address) are set to follow. If there is only one co-author,
-%list both author and co-author side by side.
-%
-%Please pay special attention to the instructions in Section \ref{others}
-%regarding figures, tables, acknowledgments, and references.
 
 \section{Architecture}
 \label{headings}
@@ -236,12 +135,16 @@ Densely connected from hidden layer to output
 \subsection{Absolute Value Function}
 
 The absolute value function was chosen because it is has a number of desirable properties: 
-It is nonlinear (a requirement for interesting computations to be possible)
-It is unbounded. (Can I make an argument for why this is an important thing? Something somthing Turing-complete?)
-It is idempotent! (This aspect of stability may allow for long term, high precision storage of information without specialized architectural design)
-It is (almost) everywhere differentiable, with unit-length derivatives of either -1 or 1.
-It is norm-preserving (and hence gradient preserving), both for each individual component of the vector, and also for the entire vector.
-The absolute value function cannot, by itself, cause gradients to explode, nor vanish.
+
+\begin{itemize}
+\item Nonlinear: This is a requirement for useful computations to be possible
+\item Unbounded: Can I make an argument for why this is an important thing? Something somthing Turing-complete?
+\item Idempotent: This aspect of stability may allow for long term, high precision storage of information without specialized architectural design
+\item (Almost) Everywhere differentiable: It is (almost) everywhere differentiable, with unit-length derivatives of either -1 or 1
+\item Norm-preserving: It is norm-preserving, both for each individual component of the vector, and also for the vector as a whole.
+The absolute value function cannot, by itself, cause gradients to explode, nor vanish
+\end{itemize}
+
 
 \begin{figure}[hbtp]
 \centering
@@ -251,15 +154,15 @@ The absolute value function cannot, by itself, cause gradients to explode, nor v
 
 Generic restatements about why norm preservation is important when training recurrent neural networks.
 
-LSTM and GRU preserve the gradient over time by mostly avoiding the direct application of nonlinearities as much as possible. (ResNet is similar in this sense.) However, we speculate that many potentially useful algorithms or behaviors likely require the application of a very large number of computations/transformations, rather than simply preserving a small number of computations/transformations over large spans of time.
+LSTM and GRU preserve the gradient over time by mostly avoiding the direct application of nonlinearities as much as possible. ResNet is intuitively similar in this sense. (TODO: Highway networks?) However, it is likely the case that many potentially useful algorithms or dynamical behaviors require the application of a long sequence of nonlinear transformations, rather than simply preserving a small number of computations/transformations over extensive spans of time.
 
-One toy problem that exhibits such a computational requirement is sequential parity, which will be visited below (and which LSTM and GRU are completely unable to solve for T > 10.)
+One toy problem that requires a long, unbroken chain of nonlinear transformations is sequential parity, which will be visited below (and which LSTM and GRU are completely unable to solve for T > 10.)
 
-Others (although surprisingly few) have experimented with using the absolute value function in RNNs, see [REF], [REF]... 
+Others [REF] [REF] have experimented with using the absolute value function in RNNs, but overall this is a largely unexplored activation function.
+ 
 We speculate that it has not received much attention as of yet, because very special care must be taken to control the spectral radius of the recurrent matrix.
 
 Something about absolute value function being the only continuous norm preserving non-linearity (is that true?).
-Something about nice properties of absolute value function. Idempotent, etc..
 
 \subsection{Constraints}
 
@@ -393,9 +296,7 @@ John went back to the garden. & & \\
 John moved to the bedroom. & & \\
 & Where is Sandra? & bathroom \\
 \hline
-
 \end{tabular}
-
 \end{table}
 
 In the accompanying paper, Weston et al introduce Memory Networks in order to overcome many of the shortcomings of a plain LSTM network. 
@@ -405,6 +306,40 @@ Additionally, it has been found that adding attentional mechanisms to input hist
 ADD MORE STUFF ABOUT THAT HERE
 
 Note that in this work we are not comparing Diagnet directly to any of the aforementioned “augmented” neural architectures. Instead, we demonstrate that Diagnet significantly outperforms LSTM and GRU on many of these 20 tasks, even despite using a much simpler and computationally efficient internal architecture.
+
+\begin{table}
+
+\centering
+\caption{bAbI test set accuracies}
+\begin{tabular}{|l|r|r|r|}
+\hline
+Task & LSTM & Diagnet & +/- \\
+\hline
+Single Supporting Fact & 50 & \textbf{72.1} & +22.1 \\
+Two Supporting Facts & 20 & \textbf{31.8} & +11.8 \\
+Three Supporting Facts & 20 & \textbf{32.4} & +12.4 \\
+Two Arg. Relations & 61 & \textbf{98.9} & +37.9 \\
+Three Arg. Relations & 70 & \textbf{82.4} & +12.4 \\
+Yes/No Questions & 48 & \textbf{72.4} & +24.4 \\
+Counting & 49 & \textbf{82.1} & +33.1 \\
+Lists/Sets & 45 & \textbf{75.1} & +30.1 \\
+Simple Negation & 64 & \textbf{77}.0 & +13.0 \\
+Indefinite Knowledge & 44 & \textbf{66.8} & +22.8 \\
+Basic Coreference & 72 & \textbf{81.3} & +9.3 \\
+Conjunction & 74 & \textbf{90.4} & +6.4 \\
+Compound Coreference & 94 & \textbf{94.2} & +0.2 \\
+Time Reasoning & 27 & \textbf{39.6} & +12.6 \\
+Basic Deduction & 21 & \textbf{49.1} & +28.1 \\
+Basic Induction & 23 & \textbf{46.5} & +23.5 \\
+Positional Reasoning & \textbf{51} & \textcolor{red}{50.1} & -0.9 \\
+Size Reasoning & 52 & \textbf{92.0} & +40.0 \\
+Path Finding & 8 & \textbf{12.4} & +4.4 \\
+Agent's Motivations & 91 & \textbf{96.3} & +5.3 \\
+\hline
+
+\end{tabular}
+
+\end{table}
 
 As far as we are aware, these are the strongest results to date on the bAbI tasks for a “plain” neural neural architecture.
 
