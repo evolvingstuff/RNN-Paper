@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.8.2)  4 AUG 2018 13:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.8.2)  7 AUG 2018 21:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1130,14 +1130,8 @@ File: images/state-space2.png Graphic file (type png)
 
 <use images/state-space2.png>
 Package pdftex.def Info: images/state-space2.png used on input line 151.
-(pdftex.def)             Requested size: 314.17297pt x 163.61084pt.
- [3]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [4 <./images/state-space2.png>] [5]
-Underfull \vbox (badness 1635) has occurred while \output is active []
-
- [6]
+(pdftex.def)             Requested size: 157.08649pt x 81.80542pt.
+ [3 <./images/state-space2.png>] [4] [5] [6]
 LaTeX Font Info:    Font shape `T1/ptm/bx/it' in size <10> not available
 (Font)              Font shape `T1/ptm/b/it' tried instead on input line 542.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
@@ -1154,13 +1148,13 @@ Package rerunfilecheck Info: File `nips_2018.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 561.
  ) 
 Here is how much of TeX's memory you used:
- 19477 strings out of 494910
- 358102 string characters out of 6179837
- 467686 words of memory out of 5000000
- 22208 multiletter control sequences out of 15000+600000
+ 19509 strings out of 494910
+ 358724 string characters out of 6179837
+ 472499 words of memory out of 5000000
+ 22240 multiletter control sequences out of 15000+600000
  41186 words of font info for 133 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 55i,12n,89p,1289b,970s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 57i,14n,90p,1289b,1022s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc} </home/thomas/.te
 xmf-var/fonts/pk/ljfour/jknappen/ec/ectt1000.600pk></usr/share/texlive/texmf-di
 st/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fon
@@ -1172,7 +1166,7 @@ cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fon
 ts/type1/urw/times/utmri8a.pfb>
-Output written on nips_2018.pdf (7 pages, 462843 bytes).
+Output written on nips_2018.pdf (7 pages, 462114 bytes).
 PDF statistics:
  210 PDF objects out of 1000 (max. 8388607)
  162 compressed objects within 2 object streams
