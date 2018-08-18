@@ -57,7 +57,7 @@ Morgan Weaver\\
 %\end{center}
 %
 %Please read the instructions below carefully and follow them faithfully.
-Recurrent Neural Networks represent one of the most important deep learning architectures in current use.  They are increasingly being used for many tasks, such as time series prediction [REF] , unsegmented, connected handwriting recognition [REF], large-vocabulary speech recognition [REF], modeling chaotic phenomena [REF], language modeling and machine translation [REF], robot control [REF], Protein Homology Detection [REF].
+Recurrent Neural Networks represent one of the most important deep learning architectures in current use.  They are increasingly being used for many tasks, such as time series prediction \citet*{einstein}, unsegmented, connected handwriting recognition [REF], large-vocabulary speech recognition [REF], modeling chaotic phenomena [REF], language modeling and machine translation [REF], robot control [REF], Protein Homology Detection [REF].
  
  
 Wikipedia: "A major problem with gradient descent for standard RNN architectures is that error gradients vanish exponentially quickly with the size of the time lag between important events.[34][67] LSTM combined with a BPTT/RTRL hybrid learning method attempts to overcome these problems.[6] "
@@ -341,7 +341,7 @@ Agent's Motivations & 91 & \textbf{96.3} & +5.3 \\
 
 \end{table}
 
-As far as we are aware, these are the strongest results to date on the bAbI tasks for a “plain” neural neural architecture.
+As far as we are aware, these are the strongest results to date using a “plain” neural neural architecture on the 1k, weakly supervised version of the bAbI tasks.
 
 This suggests that Diagnet may represent 
 
@@ -532,30 +532,34 @@ Here we outline the features, mechanisms, and benchmarking performance of Diagne
 
 The authors would like to express their gratitude to their sponsor .
 
-\section*{References}
+%\section*{References}
 
-References follow the acknowledgments. Use unnumbered first-level
-heading for the references. Any choice of citation style is acceptable
-as long as you are consistent. It is permissible to reduce the font
-size to \verb+small+ (9 point) when listing the references. {\bf
-  Remember that you can use more than eight pages as long as the
-  additional pages contain \emph{only} cited references.}
-\medskip
+\bibliographystyle{plainnat}
+\bibliography{refs}
 
-\small
 
-[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms
-for connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and
-T.K.\ Leen (eds.), {\it Advances in Neural Information Processing
-  Systems 7}, pp.\ 609--616. Cambridge, MA: MIT Press.
-
-[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS:
-  Exploring Realistic Neural Models with the GEneral NEural SImulation
-  System.}  New York: TELOS/Springer--Verlag.
-
-[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of
-learning and recall at excitatory recurrent synapses and cholinergic
-modulation in rat hippocampal region CA3. {\it Journal of
-  Neuroscience} {\bf 15}(7):5249-5262.
+%References follow the acknowledgments. Use unnumbered first-level
+%heading for the references. Any choice of citation style is acceptable
+%as long as you are consistent. It is permissible to reduce the font
+%size to \verb+small+ (9 point) when listing the references. {\bf
+%  Remember that you can use more than eight pages as long as the
+%  additional pages contain \emph{only} cited references.}
+%\medskip
+%
+%\small
+%
+%[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms
+%for connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and
+%T.K.\ Leen (eds.), {\it Advances in Neural Information Processing
+%  Systems 7}, pp.\ 609--616. Cambridge, MA: MIT Press.
+%
+%[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS:
+%  Exploring Realistic Neural Models with the GEneral NEural SImulation
+%  System.}  New York: TELOS/Springer--Verlag.
+%
+%[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of
+%learning and recall at excitatory recurrent synapses and cholinergic
+%modulation in rat hippocampal region CA3. {\it Journal of
+%  Neuroscience} {\bf 15}(7):5249-5262.
 
 \end{document}
