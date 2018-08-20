@@ -244,30 +244,6 @@ Poor-man’s gate sizes
 
 Maybe make a table of these things for all the experiments? That would be pleasant to read
 
-
-\subsection{Pathological Sequence Problems}
-
-Maybe mention Hessian-Free learning here, even though it isn’t really the same in terms of architecture.
-Reference the original LSTM papers that were the source of the pathological sequence problems.
-Mention again the use of the extra feed forward layer before the recurrent one for these.
-
-Reiterate that most of these toy problems emphasize a very small number of computations (applications of nonlinearity) spaced out over very long stretches of time.
-
-\subsubsection{Pathological Adding}
-
-(Turns out to be much faster to solve if you fix the recurrent weights to constant values of 1. Doing so still allows solutions to more complex tasks like bAbI, but with slightly worse scores.)
-
-\subsubsection{Pathological Multiplication}
-
-\subsubsection{Pathological XOR}
-
-\subsection{Sequential Parity}
-
-Mention evolino
-Can be represented by a very simple state machine (show diagram?), yet extremely difficult to train for conventional RNNs.
-Reiterate, long period of time plus lots of computations. LSTM and GRU fail spectacularly.
-*Maybe show diagram of hidden states through time?
-
 \subsection{Facebook bAbI Question-Answering}
 
 bAbI is a set of 20 synthetic natural language processing tasks created by \citet{2015arXiv150205698W}. Each task has been designed to test a particular set of logic and reasoning capabilities, in order to demonstrate the strengths and weakness of various learning models. The tasks include simple induction, deduction, remembering temporal ordering of facts, etc..
