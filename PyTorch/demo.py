@@ -21,7 +21,7 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='PyTorch Example')
 
 	SANITY_CHECK = False
-	seed = 49 #45, 47
+	seed = 60 #53
 	if seed != None:
 		random.seed(seed)
 		torch.manual_seed(seed)
@@ -29,18 +29,18 @@ if __name__ == '__main__':
 
 	use_abs_diag_rnn = True # False -> use lstm
 
-	global_norm_clip = 30.0 #TODO: figure out how to set this automatically
+	global_norm_clip = 30.0 #30.0 #TODO: figure out how to set this automatically
 	local_grad_clip = 1.0
 
 	seq_length = 1000 #1000
-	total_training_examples = 100 # 1000
-	show_every = 100
-	batch_size_train = 50 #50
+	total_training_examples = 250 # 1000
+	show_every = 10
+	batch_size_train = 64 #50
 	batch_size_test = 1000
 	gate_size = 20 #20
-	hidden_size = 40 #40
+	hidden_size = 40 # 40
 
-	shuffle_training_examples = False
+	shuffle_training_examples = True
 
 	init_weight_recur = 1.0
 
@@ -48,9 +48,9 @@ if __name__ == '__main__':
 	output_size = 1
 	timesteps = 1000
 
-	learning_rate = 0.001
+	learning_rate = 0.001 #0.001
 	alpha = 0.999
-	weight_decay = 0.001
+	weight_decay = 0.001 #0.001
 
 	if use_abs_diag_rnn:
 		#net = Diagnet(input_size,hidden_size,output_size, init_weight_recur) #TODO
@@ -63,8 +63,8 @@ if __name__ == '__main__':
 		print('using LSTM')
 
 	#sequence_generator = sequentialParitySequenceGenerator #TODO
-	sequence_generator = pathologicalXorGenerator
-	#sequence_generator = pathologicalAddingGenerator
+	#sequence_generator = pathologicalXorGenerator
+	sequence_generator = pathologicalAddingGenerator
 	#sequence_generator = pathologicalMultiplyGenerator
 	
 	testX, testY, task_name = batchGenerator(seq_length, batch_size_test, sequence_generator)
@@ -74,13 +74,15 @@ if __name__ == '__main__':
 
 	optimizer = RMSpropclipped(net.parameters(), lr=learning_rate, alpha=alpha, weight_decay=weight_decay, clip=local_grad_clip)
 
-	#loss_fn = nn.MSELoss()
-	loss_fn = nn.BCEWithLogitsLoss()
+	loss_fn = nn.MSELoss()
+	#loss_fn = nn.BCEWithLogitsLoss()
 
 	training_examples = []
 	for example in range(total_training_examples):
 		trainX, trainY, _ = batchGenerator(seq_length, batch_size_train, sequence_generator)
 		training_examples.append((trainX, trainY))
+
+	low_loss = 10000000
 
 	for t in range(timesteps):
 
@@ -117,7 +119,11 @@ if __name__ == '__main__':
 				predictedY = net(testX)
 				loss = loss_fn(predictedY, testY)
 				end = current_milli_time()
-				print('step {:d} of {:d}\t{:d}ms\ttest loss: {:f}'.format(t+1, timesteps, end-start, loss.item()))
+				if loss < low_loss:
+					print('step {:d} of {:d}\t{:d}ms\ttest loss: {:f} +'.format(t+1, timesteps, end-start, loss.item()))
+					low_loss = loss
+				else:
+					print('step {:d} of {:d}\t{:d}ms\ttest loss: {:f}'.format(t+1, timesteps, end-start, loss.item()))
 				start = current_milli_time()
 
 			s += 1

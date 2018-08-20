@@ -38,7 +38,7 @@ Morgan Weaver\\
 \maketitle
 \begin{abstract}
 
-  Recurrent Neural Networks have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. We demonstrate in a variety of benchmarking tasks that learning becomes possible with delays of over 10,000 time steps, representing substantial gains over existing RNN designs.  Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example version of the bAbI task over LSTM and GRU. In addition, Diagnet scores higher in testing accuracy on 15 out of bAbI 20  bAbI tasks, by margins of 3-30\%, while supporting more hidden neurons than fully-connected RNN architectures. 
+  Recurrent neural networks have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. We demonstrate in a variety of benchmarking tasks that learning becomes possible with delays of up to 10,000 time steps, representing substantial gains over existing RNN designs.  Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example, weakly-supervised version of the bAbI tasks as compared to Long Short Term Memory. Diagnet scores higher in testing on 15 out of the 20 tasks, by margins of 3-30\% accuracy, while enabling the use of significantly more hidden neurons than fully-connected RNNs. 
 
 %  The abstract paragraph should be indented \nicefrac{1}{2}~inch
 %  (3~picas) on both the left- and right-hand margins. Use 10~point
@@ -57,7 +57,7 @@ Morgan Weaver\\
 %\end{center}
 %
 %Please read the instructions below carefully and follow them faithfully.
-Recurrent Neural Networks represent one of the most important deep learning architectures in current use.  They are increasingly being used for many tasks, such as time series prediction \citet*{einstein}, unsegmented, connected handwriting recognition [REF], large-vocabulary speech recognition [REF], modeling chaotic phenomena [REF], language modeling and machine translation [REF], robot control [REF], Protein Homology Detection [REF].
+Recurrent neural networks represent one of the most important deep learning architectures in current use.  They are increasingly being used for many tasks, such as time series prediction [REF], unsegmented, connected handwriting recognition [REF], large-vocabulary speech recognition [REF], modeling chaotic phenomena [REF], language modeling and machine translation [REF], robot control [REF], Protein Homology Detection [REF].
  
  
 Wikipedia: "A major problem with gradient descent for standard RNN architectures is that error gradients vanish exponentially quickly with the size of the time lag between important events.[34][67] LSTM combined with a BPTT/RTRL hybrid learning method attempts to overcome these problems.[6] "
@@ -92,7 +92,7 @@ summarized in Sections \ref{gen_inst}, \ref{headings}, and
 
 \section{Previous Work}
 \label{gen_inst}
-It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982. (TODO: mention Elman/Jordan networks?) Subsequently, Schmidhuber [REF] developed the Neural History Compressor (1993) and was able to preserve information over time steps, while compressing information.  In 1991 Fallman developed the Recurrent Cascade Correlation Algorithm (1991)--Fallman
+It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982. (TODO: mention Elman/Jordan networks?) Subsequently, Schmidhuber [REF] developed the Neural History Compressor (1993) and was able to preserve information over time steps, while compressing information.  In 1991 Fallman developed the Recurrent Cascade Correlation Algorithm \citet{Fahlman1990TheRC}
 Add 1 hidden neuron at a time.  All else frozen.  Inputs go here.  Output of prev goes to new and also all inputs. Each new hidden neuron must be maximally correlated with current remaining err per step.  Now make recurrent: each neuron has single link to self.  Rinse n repeat algo; truncated backprop at the time bc feasible.  At time, proved not useful for certain grammars like seq parity (using saturating, not abs val fxn) First paper T knows of where neuron self-connected. (IndRNN first layer is the same)
 LSTM (1997)-gradient preservation. first really good thing for v/exp gradient problem.  Forgets/gates. 
 GRU (2014)-just ref it, no significant influence
@@ -270,7 +270,7 @@ Reiterate, long period of time plus lots of computations. LSTM and GRU fail spec
 
 \subsection{Facebook bAbI Question-Answering}
 
-bAbI is a set of 20 synthetic NLP tasks put out by Facebook research (2015) which have been designed to test the ability to perform logical reasoning about text. Each task has been designed to require a particular set of capabilities to be solved; simple induction, deduction, remembering temporal ordering of facts, etc..
+bAbI is a set of 20 synthetic natural language processing tasks created by \citet{2015arXiv150205698W}. Each task has been designed to test a particular set of logic and reasoning capabilities, in order to demonstrate the strengths and weakness of various learning models. The tasks include simple induction, deduction, remembering temporal ordering of facts, etc..
 
 %TODO: how to make sure this table appears after the subsection?
 \begin{table}
