@@ -1,4 +1,5 @@
 \documentclass{article}
+\renewcommand{\theequation}{\arabic{equation}}
 
 % ready for submission
 \usepackage[preprint]{nips_2018}
@@ -58,41 +59,38 @@ Morgan Weaver\\
 %
 %Please read the instructions below carefully and follow them faithfully.
 Recurrent neural networks represent one of the most important deep learning architectures in current use.  They are increasingly being used for many tasks, such as time series prediction [REF], unsegmented, connected handwriting recognition [REF], large-vocabulary speech recognition [REF], modeling chaotic phenomena [REF], language modeling and machine translation [REF], robot control [REF], Protein Homology Detection [REF].
- 
- 
-Wikipedia: "A major problem with gradient descent for standard RNN architectures is that error gradients vanish exponentially quickly with the size of the time lag between important events.[34][67] LSTM combined with a BPTT/RTRL hybrid learning method attempts to overcome these problems.[6] "
-Vanishing gradients due to the nonlinearities used (e.g. ReLU)
       
 We are interested in addressing two widely-cited [RED] pain points of RNN performance.  The first being the vanishing and exploding gradient problem [REF], and the second being performance over increasing time steps [REF].  We address these issues by implementing three as kjfhakdf that have not yet been exibited in combination in neural net design. 
 What we found Results were...impressive
 
 In the following paper, we present a brief outline of foundational work in the problem space to contextualize Diagnet’s emergence in RNN design.  Then, we present a discussion of the architecture and mechanisms of Diagnet, along with a useful visual tool for building an intuitive understanding of Diagnet’s units and their behavior.  Next we present a series of common benchmarking tasks, the results of each task, and finally conclude with a discussion of Diagnet’s performance and behavior based on experimental results.  We hope to offer an interesting and powerful new tool for sequence modeling in our introduction of Diagnet, while laying the groundwork for further exploration, architectural innovation, and interaction with the ML community.
 
-\paragraph{New preprint option for 2018}
-If you wish to post a preprint of your work online, e.g., on arXiv,
-using the NIPS style, please use the \verb+preprint+ option. This will
-create a nonanonymized version of your work with the text
-``Preprint. Work in progress.''  in the footer. This version may be
-distributed as you see fit. Please \textbf{do not} use the
-\verb+final+ option, which should \textbf{only} be used for papers
-accepted to NIPS.
-
-At submission time, please omit the \verb+final+ and \verb+preprint+
-options. This will anonymize your submission and add line numbers to aid
-review. Please do \emph{not} refer to these line numbers in your paper
-as they will be removed during generation of camera-ready copies.
-
-The file \verb+nips_2018.tex+ may be used as a ``shell'' for writing
-your paper. All you have to do is replace the author, title, abstract,
-and text of the paper with your own.
-
-The formatting instructions contained in these style files are
-summarized in Sections \ref{gen_inst}, \ref{headings}, and
-\ref{others} below.
+%\paragraph{New preprint option for 2018}
+%If you wish to post a preprint of your work online, e.g., on arXiv,
+%using the NIPS style, please use the \verb+preprint+ option. This will
+%create a nonanonymized version of your work with the text
+%``Preprint. Work in progress.''  in the footer. This version may be
+%distributed as you see fit. Please \textbf{do not} use the
+%\verb+final+ option, which should \textbf{only} be used for papers
+%accepted to NIPS.
+%
+%At submission time, please omit the \verb+final+ and \verb+preprint+
+%options. This will anonymize your submission and add line numbers to aid
+%review. Please do \emph{not} refer to these line numbers in your paper
+%as they will be removed during generation of camera-ready copies.
+%
+%The file \verb+nips_2018.tex+ may be used as a ``shell'' for writing
+%your paper. All you have to do is replace the author, title, abstract,
+%and text of the paper with your own.
+%
+%The formatting instructions contained in these style files are
+%summarized in Sections \ref{gen_inst}, \ref{headings}, and
+%\ref{others} below.
 
 \section{Previous Work}
 \label{gen_inst}
-It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982. (TODO: mention Elman/Jordan networks?) Subsequently, Schmidhuber [REF] developed the Neural History Compressor (1993) and was able to preserve information over time steps, while compressing information.  In 1991 Fallman developed the Recurrent Cascade Correlation Algorithm \citet{Fahlman1990TheRC}
+It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  
+Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982. (TODO: mention Elman/Jordan networks?) Subsequently, Schmidhuber [REF] developed the Neural History Compressor (1993) and was able to preserve information over time steps, while compressing information.  In 1991 Fallman developed the Recurrent Cascade Correlation Algorithm \citet{Fahlman1990TheRC}
 Add 1 hidden neuron at a time.  All else frozen.  Inputs go here.  Output of prev goes to new and also all inputs. Each new hidden neuron must be maximally correlated with current remaining err per step.  Now make recurrent: each neuron has single link to self.  Rinse n repeat algo; truncated backprop at the time bc feasible.  At time, proved not useful for certain grammars like seq parity (using saturating, not abs val fxn) First paper T knows of where neuron self-connected. (IndRNN first layer is the same)
 LSTM (1997)-gradient preservation. first really good thing for v/exp gradient problem.  Forgets/gates. 
 GRU (2014)-just ref it, no significant influence
@@ -187,11 +185,9 @@ Critical to do a combination of both global and local norm clipping. Either alon
 \subsection{Architectural variations}
 \subsubsection{Input masking (“Poor man’s gate”)}
 
-\begin{figure}
-  \centering
-  \[h_t := | u \circ h_{t-1} + W\sigma (Vx_t)) |\]
-  \caption{Hidden state update formula.}
-\end{figure}
+\begin{equation}
+  h_t := | u \circ h_{t-1} + W\sigma (Vx_t)) |
+\end{equation}
 
 % \[h_t = | u \circ h_{t-1} + W\sigma (Vx_t)) |\]
 
@@ -323,6 +319,9 @@ This suggests that Diagnet may represent
 
 \section{Discussion}
 \subsection{Future Work}
+Diagnet's architecture suggests many avenues for additional tasks and performance-enhancing modifications.  Its segregated unit design is ideal for parallelization, and we have yet to tap its potential for GPU operations.  Another intuitive addition would be to include an attentional mechanism or memory augmentation, which we leave to future publications.  
+As RNNs have historically been utilized with great success in NLP tasks, we intend to continue exploring Diagnet's capabilities in this problem space.  Another area in which complex long-range sequences are of great interest is computational genomics. The roughly 1.5-gigabytes of information in the human genome may benefit from an RNN architecture supporting wider hidden layers.  
+
 \section{Conclusion}
 Here we outline the features, mechanisms, and benchmarking performance of Diagnet. Results were robust over a variety of tasks, most notably in bAbI question-answering tasks, where Diagnet’s accuracy scores showed up to 36\% percent improvement over existing architectures such as LSTM and GRU.  While memory augmentation and attentional mechanisms offer clear advantages as architectural additions, we choose to focus on the core RNN functionality in this paper.  Future work may incorporate attentional mechanisms, memory augmentation, and additional task spaces such as semantic embeddings, genetic sequencing, and computer vision.  Diagnet’s novel architecture offers great flexibility in hidden layering, and number of steps in various memory tasks, as well as potential for distributed computing.  Due to the fact that Diagnet does not have gating mechanisms in its current iteration, it is largely input-driven, and tends to perform best in tasks where an output sequence is expected after arbitrary delays. The work presented here represents a first glance at Diagnet’s mechanisms and potential, which the authors hope to expand in future work. 
 
