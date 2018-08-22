@@ -241,7 +241,19 @@ Maybe make a table of these things for all the experiments? That would be pleasa
 
 \subsection{Facebook bAbI Question-Answering}
 
-bAbI is a set of 20 synthetic natural language processing tasks created by \citet{2015arXiv150205698W}. Each task has been designed to test a particular set of logic and reasoning capabilities, in order to demonstrate the strengths and weakness of various learning models. The tasks include simple induction, deduction, remembering temporal ordering of facts, etc..
+bAbI is a set of 20 synthetic natural language understanding tasks created by \citet{2015arXiv150205698W}. Each task has been designed to test for particular logical and reasoning capabilities, such as induction, deduction, chaining of facts, temporal ordering of events, as well as others. It is suggested that solving these "toy" problems is a necessary (although not sufficient) precondition to the development of truly intelligent systems.
+
+In the paper, it was shown that a plain LSTM network was unable to solve any of the 20 tasks, where success had been defined as attaining an accuracy of 95\% or more.
+
+The initial, significant improvement over a plain RNN baseline was in the form of MemNNs, previously introduced in [REF]. And since then a number of new techniques have been successfully applied to bAbI, generally falling into two overall domains: augmented memories, and attentional mechanisms.
+
+Augmented memories are a family of approaches that involve fitting a neural network (generally a recurrent one) with an "external" - and differently structured - form of memory. These external memory stores are generally more inspired by computer science than biology, and include concepts such as content addressable memory, random access memory, stacks, queues, Turing tapes, cellular automata, etc.. Almost all external memories make use of fully differentiable read and write mechanisms, although there are a few notable exceptions that are discrete in nature; requiring reinforcement learning rather than pure backpropagation in order to train.
+
+The other significant family of approaches involve attentional mechanisms. Attentional mechanisms have met with great recent success, particularly in the domain of machine translation. Rather than having the neural network improve its ability to store information initially, attentional mechanisms all the model to go back over the sequential history of its inputs, often multiple times, conditioned on the type of output that is expected. In the case of machine translation, that conditioning will be driven by the next word in the sentence it is translating combined with what it has already produced. In the case of natural language understanding, it is the question being asked that conditions the attention to the relevant subset of facts in the preceding material. In essence, attention allows models to selectively reread do further processing on what has already been seen.
+
+Diagnet does none of this, yet. But future experiments will undoubtedly involve memory enhancing alterations, with Diagnet as the core "controller" of the architecture. 
+
+
 
 %TODO: how to make sure this table appears after the subsection?
 \begin{table}
