@@ -43,23 +43,10 @@ Morgan Weaver\\
 
   Recurrent neural networks have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example, weakly-supervised version of the bAbI tasks as compared to Long Short Term Memory. Diagnet scores higher in testing on 15 out of the 20 tasks, by margins of 3-30\% accuracy, while enabling the use of significantly more hidden neurons than fully-connected RNNs. 
 
-%  The abstract paragraph should be indented \nicefrac{1}{2}~inch
-%  (3~picas) on both the left- and right-hand margins. Use 10~point
-%  type, with a vertical spacing (leading) of 11~points.  The word
-%  \textbf{Abstract} must be centered, bold, and in point size 12. Two
-%  line spaces precede the abstract. The abstract must be limited to
-%  one paragraph.
 \end{abstract}
 
 \section{Introduction}
 
-%NIPS requires electronic submissions.  The electronic submission site
-%is
-%\begin{center}
-%  \url{https://cmt.research.microsoft.com/NIPS2018/}
-%\end{center}
-%
-%Please read the instructions below carefully and follow them faithfully.
 Recurrent neural networks represent one of the most important deep learning architectures in current use.  They are increasingly being used for many tasks, such as time series prediction [REF], unsegmented, connected handwriting recognition [REF], large-vocabulary speech recognition [REF], modeling chaotic phenomena [REF], language modeling and machine translation [REF], robot control [REF], Protein Homology Detection [REF].
       
 We are interested in addressing two widely-cited [REF] pain points of RNN performance.  The first being the vanishing and exploding gradient problem [REF], and the second being performance over increasing time steps [REF].  We address these issues by implementing three as kjfhakdf that have not yet been exibited in combination in neural net design. 
@@ -133,8 +120,6 @@ Densely connected from hidden layer to output
   \mathbf{h}_t := | \mathbf{u} \circ \mathbf{h}_{t-1} + \mathbf{Vx}_t |
 \end{equation}
 
-%First-level headings should be in 12-point type.
-
 \subsection{Absolute Value Function}
 
 The absolute value function was chosen because it is has a number of desirable properties: 
@@ -147,13 +132,6 @@ The absolute value function was chosen because it is has a number of desirable p
 \item Norm-preserving: It is norm-preserving, both for each individual component of the vector, and also for the vector as a whole.
 The absolute value function cannot, by itself, cause gradients to explode, nor vanish
 \end{itemize}
-
-
-%\begin{figure}[hbtp]
-%\centering
-%\includegraphics[scale=0.25]{images/state-space2.png}
-%\caption{Absolute value dynamics}
-%\end{figure}
 
 Generic restatements about why norm preservation is important when training recurrent neural networks.
 
@@ -171,7 +149,6 @@ Something about absolute value function being the only continuous norm preservin
 
 Postulate that absolute value function hasn’t been explored much, particularly for recurrent neural nets, because without the proper constraints, its values tend to rapidly blow up.
 
-
 \subsubsection{Limited [-1, 1] range}
 Important to have these constraints, otherwise blows up.
 This is an extremely simple way of limiting the spectral radius of the matrix.
@@ -187,23 +164,7 @@ Some form of gradient clipping is standard practice for RNNs [REF], but to our k
 Appears to be critical to limit the size of the overall norm of the gradient, particularly for some of the really long-delay tasks.
 
 Critical to do a combination of both global and local norm clipping. Either alone is insufficient.
-%\subsection{Architectural variations}
-%\subsubsection{Input masking (“Poor man’s gate”)}
-%
-%
-%
-%% \[h_t = | u \circ h_{t-1} + W\sigma (Vx_t)) |\]
-%
-%Because the recurrent layer uses no gating mechanism, it can sometimes be useful to have an extra feed forward hidden layer that can learn to selectively ignore certain inputs. In the pathological sequence problems, we have chosen to use ReLU units, because of their hard stop at zero.
-%This is necessary for all of the “pathological” problems.
-%“Poor man’s gate” can only mask information that is immediately identifiable as not useful; makes use of no prior contextual information.
 
-%\paragraph{Paragraphs}
-%
-%There is also a \verb+\paragraph+ command available, which sets the
-%heading in bold, flush left, and inline with the text, with the
-%heading followed by 1\,em of space.
-%
 \section{Experiments}
 \label{others}
 Experimental settings, like learning rates, cooling schedules, hidden layer sizes, etc..
@@ -226,7 +187,7 @@ Experimental settings, like learning rates, cooling schedules, hidden layer size
 %\label{table:nonlin} % is used to refer this table in the text
 %\end{table}
 
-All experiments use the following settings:
+This experiment uses the following settings:
 
 RMSprop*, with a learning rate of 0.001
 Recurrent parameters are all initialized to 1.0
@@ -340,44 +301,6 @@ As RNNs have historically been utilized with great success in NLP tasks, we inte
 \section{Conclusion}
 Here we outline the features, mechanisms, and benchmarking performance of Diagnet. Results were robust over a variety of tasks, most notably in bAbI question-answering tasks, where Diagnet’s accuracy scores showed up to 36\% percent improvement over existing architectures such as LSTM and GRU.  While memory augmentation and attentional mechanisms offer clear advantages as architectural additions, we choose to focus on the core RNN functionality in this paper.  Future work may incorporate attentional mechanisms, memory augmentation, and additional task spaces such as semantic embeddings, genetic sequencing, and computer vision.  Diagnet’s novel architecture offers great flexibility in hidden layering, and number of steps in various memory tasks, as well as potential for distributed computing.  Due to the fact that Diagnet does not have gating mechanisms in its current iteration, it is largely input-driven, and tends to perform best in tasks where an output sequence is expected after arbitrary delays. The work presented here represents a first glance at Diagnet’s mechanisms and potential, which the authors hope to expand in future work. 
 
-
-%The \verb+natbib+ package will be loaded for you by default.
-%Citations may be author/year or numeric, as long as you maintain
-%internal consistency.  As to the format of the references themselves,
-%any style is acceptable as long as it is used consistently.
-
-%The documentation for \verb+natbib+ may be found at
-%\begin{center}
-%  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
-%\end{center}
-%Of note is the command \verb+\citet+, which produces citations
-%appropriate for use in inline text.  For example,
-%\begin{verbatim}
-%   \citet{hasselmo} investigated\dots
-%\end{verbatim}
-%produces
-%\begin{quote}
-%  Hasselmo, et al.\ (1995) investigated\dots
-%\end{quote}
-%
-%If you wish to load the \verb+natbib+ package with options, you may
-%add the following before loading the \verb+nips_2018+ package:
-%\begin{verbatim}
-%   \PassOptionsToPackage{options}{natbib}
-%\end{verbatim}
-%
-%If \verb+natbib+ clashes with another package you load, you can add
-%the optional argument \verb+nonatbib+ when loading the style file:
-%\begin{verbatim}
-%   \usepackage[nonatbib]{nips_2018}
-%\end{verbatim}
-%
-%As submission is double blind, refer to your own published work in the
-%third person. That is, use ``In the previous work of Jones et
-%al.\ [4],'' not ``In our previous work [4].'' If you cite your other
-%papers that are not widely available (e.g., a journal paper under
-%review), use  author names in the citation, e.g., an author
-%of the form ``A.\ Anonymous.''
 %
 %\subsection{Footnotes}
 %
@@ -522,34 +445,7 @@ Here we outline the features, mechanisms, and benchmarking performance of Diagne
 
 The authors would like to express their gratitude to their sponsor .
 
-%\section*{References}
-
 \bibliographystyle{plainnat}
 \bibliography{refs}
-
-
-%References follow the acknowledgments. Use unnumbered first-level
-%heading for the references. Any choice of citation style is acceptable
-%as long as you are consistent. It is permissible to reduce the font
-%size to \verb+small+ (9 point) when listing the references. {\bf
-%  Remember that you can use more than eight pages as long as the
-%  additional pages contain \emph{only} cited references.}
-%\medskip
-%
-%\small
-%
-%[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms
-%for connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and
-%T.K.\ Leen (eds.), {\it Advances in Neural Information Processing
-%  Systems 7}, pp.\ 609--616. Cambridge, MA: MIT Press.
-%
-%[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS:
-%  Exploring Realistic Neural Models with the GEneral NEural SImulation
-%  System.}  New York: TELOS/Springer--Verlag.
-%
-%[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of
-%learning and recall at excitatory recurrent synapses and cholinergic
-%modulation in rat hippocampal region CA3. {\it Journal of
-%  Neuroscience} {\bf 15}(7):5249-5262.
 
 \end{document}
