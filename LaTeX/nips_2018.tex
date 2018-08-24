@@ -25,7 +25,9 @@
 \usepackage{tikz}
 \usepackage{standalone}
 
-\title{Diagnet: A Fast New Recurrent Neural Network Architecture}
+%\setcitestyle{numbers}
+
+\title{Diagnet: A Fast, Scalable Recurrent Neural Network Architecture}
  
 \author{
 Thomas Lahore\\
@@ -39,7 +41,7 @@ Morgan Weaver\\
 \maketitle
 \begin{abstract}
 
-  Recurrent neural networks have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. We demonstrate in a variety of benchmarking tasks that learning becomes possible with delays of up to 10,000 time steps, representing substantial gains over existing RNN designs.  Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example, weakly-supervised version of the bAbI tasks as compared to Long Short Term Memory. Diagnet scores higher in testing on 15 out of the 20 tasks, by margins of 3-30\% accuracy, while enabling the use of significantly more hidden neurons than fully-connected RNNs. 
+  Recurrent neural networks have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example, weakly-supervised version of the bAbI tasks as compared to Long Short Term Memory. Diagnet scores higher in testing on 15 out of the 20 tasks, by margins of 3-30\% accuracy, while enabling the use of significantly more hidden neurons than fully-connected RNNs. 
 
 %  The abstract paragraph should be indented \nicefrac{1}{2}~inch
 %  (3~picas) on both the left- and right-hand margins. Use 10~point
@@ -122,10 +124,14 @@ Hidden layer is recurrently connected by a diagonal matrix; thus every hidden ne
 Self connections of hidden neurons are clamped to lie in the range [-1.0, 1.0]
 Self connections of hidden neurons are initialized at 1.0.
 Each hidden neuron makes use of the absolute value function as a nonlinearity.
-There are no gates* (see “poor man’s gate” section later for an architectural variant)
+There are no gates
 Densely connected from hidden layer to output
 %All headings should be lower case (except for first word and proper
 %nouns), flush left, and bold.
+
+\begin{equation}
+  \mathbf{h}_t := | \mathbf{u} \circ \mathbf{h}_{t-1} + \mathbf{Vx}_t |
+\end{equation}
 
 %First-level headings should be in 12-point type.
 
@@ -143,11 +149,11 @@ The absolute value function cannot, by itself, cause gradients to explode, nor v
 \end{itemize}
 
 
-\begin{figure}[hbtp]
-\centering
-\includegraphics[scale=0.25]{images/state-space2.png}
-\caption{Absolute value dynamics}
-\end{figure}
+%\begin{figure}[hbtp]
+%\centering
+%\includegraphics[scale=0.25]{images/state-space2.png}
+%\caption{Absolute value dynamics}
+%\end{figure}
 
 Generic restatements about why norm preservation is important when training recurrent neural networks.
 
@@ -181,18 +187,16 @@ Some form of gradient clipping is standard practice for RNNs [REF], but to our k
 Appears to be critical to limit the size of the overall norm of the gradient, particularly for some of the really long-delay tasks.
 
 Critical to do a combination of both global and local norm clipping. Either alone is insufficient.
-\subsection{Architectural variations}
-\subsubsection{Input masking (“Poor man’s gate”)}
-
-\begin{equation}
-  h_t := | u \circ h_{t-1} + W\sigma (Vx_t)) |
-\end{equation}
-
-% \[h_t = | u \circ h_{t-1} + W\sigma (Vx_t)) |\]
-
-Because the recurrent layer uses no gating mechanism, it can sometimes be useful to have an extra feed forward hidden layer that can learn to selectively ignore certain inputs. In the pathological sequence problems, we have chosen to use ReLU units, because of their hard stop at zero.
-This is necessary for all of the “pathological” problems.
-“Poor man’s gate” can only mask information that is immediately identifiable as not useful; makes use of no prior contextual information.
+%\subsection{Architectural variations}
+%\subsubsection{Input masking (“Poor man’s gate”)}
+%
+%
+%
+%% \[h_t = | u \circ h_{t-1} + W\sigma (Vx_t)) |\]
+%
+%Because the recurrent layer uses no gating mechanism, it can sometimes be useful to have an extra feed forward hidden layer that can learn to selectively ignore certain inputs. In the pathological sequence problems, we have chosen to use ReLU units, because of their hard stop at zero.
+%This is necessary for all of the “pathological” problems.
+%“Poor man’s gate” can only mask information that is immediately identifiable as not useful; makes use of no prior contextual information.
 
 %\paragraph{Paragraphs}
 %
@@ -204,23 +208,23 @@ This is necessary for all of the “pathological” problems.
 \label{others}
 Experimental settings, like learning rates, cooling schedules, hidden layer sizes, etc..
 
-\begin{table}[ht]
-\caption{Hooray for a random table} % title of Table
-\centering % used for centering table
-\begin{tabular}{c c c c} % centered columns (4 columns)
-\hline\hline %inserts double horizontal lines
-Case & Method\#1 & Method\#2 & Method\#3 \\ [0.5ex] % inserts table
-%heading
-\hline % inserts single horizontal line
-1 & 50 & 837 & 970 \\ % inserting body of the table
-2 & 47 & 877 & 230 \\
-3 & 31 & 25 & 415 \\
-4 & 35 & 144 & 2356 \\
-5 & 45 & 300 & 556 \\ [1ex] % [1ex] adds vertical space
-\hline %inserts single line
-\end{tabular}
-\label{table:nonlin} % is used to refer this table in the text
-\end{table}
+%\begin{table}[ht]
+%\caption{Hooray for a random table} % title of Table
+%\centering % used for centering table
+%\begin{tabular}{c c c c} % centered columns (4 columns)
+%\hline\hline %inserts double horizontal lines
+%Case & Method\#1 & Method\#2 & Method\#3 \\ [0.5ex] % inserts table
+%%heading
+%\hline % inserts single horizontal line
+%1 & 50 & 837 & 970 \\ % inserting body of the table
+%2 & 47 & 877 & 230 \\
+%3 & 31 & 25 & 415 \\
+%4 & 35 & 144 & 2356 \\
+%5 & 45 & 300 & 556 \\ [1ex] % [1ex] adds vertical space
+%\hline %inserts single line
+%\end{tabular}
+%\label{table:nonlin} % is used to refer this table in the text
+%\end{table}
 
 All experiments use the following settings:
 
@@ -314,7 +318,7 @@ Compound Coreference & 94 & \textbf{94.2} & +0.2 \\
 Time Reasoning & 27 & \textbf{39.6} & +12.6 \\
 Basic Deduction & 21 & \textbf{49.1} & +28.1 \\
 Basic Induction & 23 & \textbf{46.5} & +23.5 \\
-Positional Reasoning & \textbf{51} & \textcolor{red}{50.1} & -0.9 \\
+Positional Reasoning & \textbf{51} & 50.1 & -0.9 \\
 Size Reasoning & 52 & \textbf{92.0} & +40.0 \\
 Path Finding & 8 & \textbf{12.4} & +4.4 \\
 Agent's Motivations & 91 & \textbf{96.3} & +5.3 \\
