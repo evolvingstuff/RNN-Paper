@@ -41,7 +41,9 @@ Morgan Weaver\\
 \maketitle
 \begin{abstract}
 
-  Recurrent neural networks have long been plagued by the vanishing and exploding gradient problems and limited performance over increasing time steps. We propose Diagnet, a novel RNN design which incorporates architectural and process-oriented elements which, in combination, greatly increase the stability and quality of the error gradient. Diagnet’s architecture relies upon three core features: 1) A single layer of segregated recurrent units which are self-connected 2) The absolute value function (an unbounded norm-preserving idempotent nonlinearity), and 3) Application of constraints in both recurrent parameter weights and gradient norms, which tightly control the exploding gradient problem.  Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen in the 1000-example, weakly-supervised version of the bAbI tasks as compared to Long Short Term Memory. Diagnet scores higher in testing on 15 out of the 20 tasks, by margins of 3-30\% accuracy, while enabling the use of significantly more hidden neurons than fully-connected RNNs. 
+  Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. Attempts to solve this have led to increasingly complex architectures and training methods. We propose Diagnet, a simple RNN design which consists of three core components: 1) a diagonal hidden-to-hidden matrix, 2) an absolute value function as the non-linearity, and 3) the application of constraints to both the recurrent parameter weights and gradient norms during training. Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen over Long Short-Term Memory on the 1000-example version of the bAbI tasks. Diagnet scores higher in testing on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
+  
+% and allows for the use of significantly more hidden neurons than standard fully-connected RNNs. 
 
 \end{abstract}
 
@@ -441,9 +443,9 @@ Here we outline the features, mechanisms, and benchmarking performance of Diagne
 %hyphenate a line. Please give LaTeX hyphenation hints using the
 %\verb+\-+ command when necessary.
 
-\subsubsection*{Acknowledgments}
-
-The authors would like to express their gratitude to their sponsor .
+%\subsubsection*{Acknowledgments}
+%
+%The authors would like to express their gratitude to their sponsor.
 
 \bibliographystyle{plainnat}
 \bibliography{refs}

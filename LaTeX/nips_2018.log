@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.8.2)  24 AUG 2018 10:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.8.2)  26 AUG 2018 15:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1116,34 +1116,31 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./figures/diagnet1.tex)
 File: figures/diagnet1.tex Graphic file (type tex)
  [2]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 128.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 130.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 128.
- [3] [4]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [5]
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 130.
+ [3] [4] [5]
 (./nips_2018.bbl) [6]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 451.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 451.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 453.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 453.
  (./nips_2018.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 451.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 451.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 453.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 453.
 Package rerunfilecheck Info: File `nips_2018.out' has not changed.
 (rerunfilecheck)             Checksum: 8CD81CB53B602FB240CEB1123693E630;737.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 451.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 453.
  ) 
 Here is how much of TeX's memory you used:
- 19482 strings out of 494910
- 358368 string characters out of 6179837
- 467218 words of memory out of 5000000
+ 19478 strings out of 494910
+ 358331 string characters out of 6179837
+ 466785 words of memory out of 5000000
  22230 multiletter control sequences out of 15000+600000
- 33097 words of font info for 126 fonts, out of 8000000 for 9000
+ 32967 words of font info for 124 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  57i,14n,90p,1192b,1022s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc} </home/thomas/.te
@@ -1156,10 +1153,10 @@ ts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/
 cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr
 /share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on nips_2018.pdf (6 pages, 119876 bytes).
+Output written on nips_2018.pdf (6 pages, 119598 bytes).
 PDF statistics:
- 161 PDF objects out of 1000 (max. 8388607)
- 125 compressed objects within 2 object streams
- 27 named destinations out of 1000 (max. 500000)
+ 160 PDF objects out of 1000 (max. 8388607)
+ 124 compressed objects within 2 object streams
+ 26 named destinations out of 1000 (max. 500000)
  20077 words of extra memory for PDF output out of 20736 (max. 10000000)
 
