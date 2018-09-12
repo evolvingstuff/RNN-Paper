@@ -41,7 +41,7 @@ Morgan Weaver\\
 \maketitle
 \begin{abstract}
 
-Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. Attempts to solve this have led to increasingly complex architectures and training methods. We propose Diagnet, a simple RNN design which consists of three core components: 1) a diagonal recurrent matrix, 2) an absolute value function as the non-linearity, and 3) the application of constraints to both the recurrent parameter weights and gradient norms during training. Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen over Long Short-Term Memory on the 1k version of the bAbI tasks. Diagnet scores higher in testing on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
+Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. Attempts to solve this have led to increasingly complex architectures and training methods. We propose Diagnet, a simple RNN design which consists of three core components: 1) a diagonal hidden-to-hidden recurrent matrix, 2) an absolute value function as the pointwise nonlinearity, and 3) the application of constraints to both the recurrent parameter weights and gradient norms during training. Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen over Long Short-Term Memory on the 1k version of the bAbI tasks. Diagnet scores higher in testing on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
   
 % and allows for the use of significantly more hidden neurons than standard fully-connected RNNs. 
 
@@ -95,8 +95,10 @@ IRNN (2015)-identity RNN--HINTON, recurrent neurons are relus, init at ID matrix
 
 SCRN (2015)--At the same time, Structurally Constrained Recurrent Networks (SCRN) were also introduced to the research community \citet{MikolovJCMR14}. diagonal entries connected constrained to 1 or a min val, so self-recurrent.  Recognizing value of separate way of handling given recurrent unit connections to self.  Better task results but not less complex computationally. Higher quality learning process.
 
+Sparseness appears to help with generalization on NLP tasks, as shown in \citet{2018arXiv180808720D}, where the use of block diagonal matrices greatly reduces the parameter count, while actually boosting test set performance.
+
 2015 saw the introduction of the Independent RNN \citet{LeJH15}, in which the model's (where nodes consist of rectified linear units) recurrent weight matrix is initialized with the identity matrix.  One caveat of this model is that the parameters need careful tuning for the model to remain stable.  The IndRNN showed better results than LSTM on some tasks, but with a simpler architecture.  In Diagnet, however, off-diagonal values in the identity matrix can only ever be zero, and are one-fast Hadamard products, reducing time complexity significantly. 
-%IndRNN  (2018)--uses self-connection in first layer, loses much efficiency.  Many-to-many connection. Very expensive.  Uses relu for non-linearity rather than our absval.  
+%IndRNN  (2018)--uses self-connection in first layer, loses much efficiency.  Many-to-many connection. Very expensive.  Uses relu for nonlinearity rather than our absval.  
 
 %In 1997, Hochreiter and Schmidhuber introduced Long Short-Term Memory (LSTM) \citet{hoch97}, which sought to address the vanishing and exploding gradient problem with constant error flow through specialized units in addition to multiplicative gated memory units, resulting in more efficient storage of information at little computational cost.  
 %Following LSTM, Chung et al. proposed the Gated Feedback Recurrent Neural Network \citet{ChungGCB15}.  
@@ -120,7 +122,7 @@ Gradient clipping--2 uses here--1)take norm of gradient over all params and limi
 \begin{figure}[b]
   \centering
   \includestandalone[scale=0.5]{figures/diagnet1}
-  \caption{Figure showing nice diagram of the architecture.}
+  \caption{Diagnet structure.}
 \end{figure}
 
 Densely connected from input to hidden layer.
@@ -162,7 +164,7 @@ Others [REF] [REF] have experimented with using the absolute value function in R
  
 We speculate that it has not received much attention as of yet, because very special care must be taken to control the spectral radius of the recurrent matrix.
 
-Something about absolute value function being the only continuous norm preserving non-linearity (is that true?).
+Something about absolute value function being the only continuous norm preserving nonlinearity (is that true?).
 
 \subsection{Constraints}
 
@@ -225,7 +227,7 @@ Maybe make a table of these things for all the experiments? That would be pleasa
 
 \subsection{Facebook bAbI Question-Answering}
 
-bAbI is a set of 20 synthetic natural language understanding tasks created by \citet{2015arXiv150205698W}. Each task has been designed to test for particular logical and reasoning capabilities, such as induction, deduction, chaining of facts, temporal ordering of events, as well as others. It is suggested that solving these "toy" problems is a necessary (although not sufficient) precondition to the development of truly intelligent systems.
+bAbI is a set of 20 synthetic natural language understanding tasks created by \citet{2015arXiv150205698W}. Each task has been designed to test language models for particular logical and reasoning capabilities, such as induction, deduction, chaining of facts, temporal ordering of events, as well as others. It is suggested that solving these "toy" problems is a necessary (although not sufficient) precondition to the development of truly intelligent systems.
 
 In the paper, it was shown that a plain LSTM network was unable to solve any of the 20 tasks, where success had been defined as attaining an accuracy of 95\% or more.
 
