@@ -111,9 +111,22 @@ DizzyRNN (2016)-abs val. weight matrix unitary transformations, broken into pair
 
 %Constraints 
 
-Besides architectural innovations, progress has been made in controlling the gradient directly.
+SELF-CONNECTION: (IndRNN IRNN, SCRN, RCCA) 
+The first RNN to incorporate self-connected neurons appeared in 1991, where Fallman developed the Recurrent Cascade Correlation Algorithm \citet{Fahlman1990TheRC}  In this paradigm, one hidden unit is added to the network at a time, with incoming weights frozen as the new unit is connected in a feed-forward manner with the previous output units. Each new hidden neuron must be maximally correlated with current remaining error per step.  This process was repeated until convergence or an acceptable level of error was reached.  At this point in time, this approach was not feasible for certain tasks like sequential parity.  This is the first occurrence we are aware of in the research in which a model contains self-connected neurons.  
 
-Clipped Gradients (Paskanu, Mikolov, Bengio)
+DIAGONAL MATRIX: IndRNN, IRNN, RCCA
+
+In 2015, the Independent RNN \citet{DBLP:journals/corr/LeJH15} was proposed, which shares strategies with Diagnet in the inclusion of a diagonal matrix, though not an identity matrix. The IndRNN's nodes consist of rectified linear units, unlike Diagnet, which uses the absolute value function.
+%%%IRNN (2015)-identity RNN--HINTON, recurrent neurons are relus not absval, init at ID matrix, then changes, . 2 big ideas. Prob: not used bc unstable, need right params.  Good init results > LSTM simpler architecture. Init at ID matrix was the big idea (unitary matrix) Diagnet too--but off-dig values can't ever be anything but 0; diag are all 1 fast Hadamard product instead of tiresome n\^2. 
+
+ABSVAL: DizzyRNN, ONE TOM IS RSRCHING[???]
+
+At roughly the same time, Structurally Constrained Recurrent Networks (SCRN) were introduced \citet{DBLP:journals/corr/MikolovJCMR14}. Here, diagonal entries in the weight matrix are constrained to 1, with self-recurrent connections
+
+uRNN (2015)-Bengio et al.  addresses vanishing gradient prob, not exploding.  Transition matrix is unitary.  Enforced.  Complex numbers, etc. Decent results. Norm-preserving but not overlapping int prop.
+
+DizzyRNN [REF] is another architecture that utilizes the absolute value function in 
+DizzyRNN (2016)-abs val. weight matrix unitary transformations, broken into pairs of 2, use 2d rotations. reasonable results. 1-2 tasks 
 
 Gradient clipping--2 uses here--1)take norm of gradient over all params and limit to N; throw away.  If larger, rescale.  2) Gradients on indiv params, scale down if exceeds limit.  Lossy, loses vector direction information. Directionality is better preserved in this multi-targeted approach. First pass then prune outliers.   
 
