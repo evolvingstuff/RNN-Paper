@@ -27,7 +27,7 @@
 
 %\setcitestyle{numbers}
 
-\title{Diagnet: A Fast, Scalable Recurrent Neural Network Architecture}
+\title{Diagnet: A Fast, Scalable Recurrent Neural Network}
  
 \author{
 Thomas Lahore\\
@@ -41,7 +41,7 @@ Morgan Weaver\\
 \maketitle
 \begin{abstract}
 
-Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. Attempts to solve this have led to increasingly complex architectures and training methods. We propose Diagnet, a simple RNN design which consists of three core components: 1) a diagonal hidden-to-hidden recurrent matrix, 2) an absolute value function as the pointwise nonlinearity, and 3) the application of constraints to both the recurrent parameter weights and gradient norms during training. Despite the segregated and simplistic nature of Diagnet's recurrent units, significant performance improvement is seen over Long Short-Term Memory on the 1k version of the bAbI tasks. Diagnet scores higher in testing on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
+Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. They are also much more computationally expensive to evaluate and train than their feedforward counterparts. Attempts to circumvent these problems have led to increasingly complex architectures and training methods. We propose Diagnet, a simple RNN design which consists of three core components: 1) an efficient diagonal hidden-to-hidden recurrent matrix, 2) the absolute value function as the element-wise nonlinearity, and 3) the application of constraints to both the recurrent parameter weights and gradient norms during training. Despite the segregated and simplistic nature of Diagnet's recurrent units, significant generalization performance improvement is seen over Long Short-Term Memory on the 1k version of the bAbI tasks. Diagnet scores higher in testing on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
   
 % and allows for the use of significantly more hidden neurons than standard fully-connected RNNs. 
 
@@ -82,7 +82,15 @@ In the following paper, we present a brief outline of foundational work in the p
 
 %Break this out by features
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Absolute value function
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+DizzyRNN (2016)-abs val. weight matrix unitary transformations, broken into pairs of 2, use 2d rotations. reasonable results. 1-2 tasks
+
+%%%%%%%%%%%%%%%%%%%%%%%%
 %Diagonal hidden state
+%%%%%%%%%%%%%%%%%%%%%%%%
 
 %It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  
 %Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982.  Subsequently, Schmidhuber \citet{6795261} developed the Neural History Compressor and was able to preserve information over time steps, while compressing information.  
@@ -95,8 +103,6 @@ IRNN (2015)-identity RNN--HINTON, recurrent neurons are relus, init at ID matrix
 
 SCRN (2015)--At the same time, Structurally Constrained Recurrent Networks (SCRN) were also introduced to the research community \citet{MikolovJCMR14}. diagonal entries connected constrained to 1 or a min val, so self-recurrent.  Recognizing value of separate way of handling given recurrent unit connections to self.  Better task results but not less complex computationally. Higher quality learning process.
 
-Sparseness appears to help with generalization on NLP tasks, as shown in \citet{2018arXiv180808720D}, where the use of block diagonal matrices greatly reduces the parameter count, while actually boosting test set performance.
-
 2015 saw the introduction of the Independent RNN \citet{LeJH15}, in which the model's (where nodes consist of rectified linear units) recurrent weight matrix is initialized with the identity matrix.  One caveat of this model is that the parameters need careful tuning for the model to remain stable.  The IndRNN showed better results than LSTM on some tasks, but with a simpler architecture.  In Diagnet, however, off-diagonal values in the identity matrix can only ever be zero, and are one-fast Hadamard products, reducing time complexity significantly. 
 %IndRNN  (2018)--uses self-connection in first layer, loses much efficiency.  Many-to-many connection. Very expensive.  Uses relu for nonlinearity rather than our absval.  
 
@@ -105,11 +111,11 @@ Sparseness appears to help with generalization on NLP tasks, as shown in \citet{
 
 %uRNN (2015)-Bengio et al.  addresses vanishing gradient prob, not exploding.  Transition matrix is unitary.  Enorced.  Complex numbers, etc. Decent results.
 
-%Absolute value function
-
-DizzyRNN (2016)-abs val. weight matrix unitary transformations, broken into pairs of 2, use 2d rotations. reasonable results. 1-2 tasks 
-
+%%%%%%%%%%%%%%
 %Constraints 
+%%%%%%%%%%%%%%
+
+%Need gradient clipping stuff here
 
 SELF-CONNECTION: (IndRNN IRNN, SCRN, RCCA) 
 The first RNN to incorporate self-connected neurons appeared in 1991, where Fallman developed the Recurrent Cascade Correlation Algorithm \citet{Fahlman1990TheRC}  In this paradigm, one hidden unit is added to the network at a time, with incoming weights frozen as the new unit is connected in a feed-forward manner with the previous output units. Each new hidden neuron must be maximally correlated with current remaining error per step.  This process was repeated until convergence or an acceptable level of error was reached.  At this point in time, this approach was not feasible for certain tasks like sequential parity.  This is the first occurrence we are aware of in the research in which a model contains self-connected neurons.  
@@ -132,11 +138,6 @@ Gradient clipping--2 uses here--1)take norm of gradient over all params and limi
 
 \section{Architecture}
 \label{headings}
-\begin{figure}[b]
-  \centering
-  \includestandalone[scale=0.5]{figures/diagnet1}
-  \caption{Diagnet structure.}
-\end{figure}
 
 Densely connected from input to hidden layer.
 Only a single, “shallow” hidden layer.
@@ -150,22 +151,54 @@ Densely connected from hidden layer to output
 %All headings should be lower case (except for first word and proper
 %nouns), flush left, and bold.
 
+%TODO: Where did the arrows go?!?
+
+\begin{figure}[h]
+  \centering
+  \includestandalone[scale=0.5]{figures/diagnet1}
+  \caption{Diagnet structural diagram.}
+\end{figure}
+
 \begin{equation}
   \mathbf{h}_t := | \mathbf{u} \circ \mathbf{h}_{t-1} + \mathbf{Vx}_t |
 \end{equation}
 
+Note that this notation represents the absolute value function applied element-wise to the vector.
+
 \subsection{Absolute Value Function}
 
-The absolute value function was chosen because it is has a number of desirable properties: 
+\begin{equation}
+|x| =
+\left\{
+	\begin{array}{ll}
+		\hfill x,  & \mbox{if } x \geq 0 \\
+		-x, & \mbox{if } x < 0
+	\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+\frac{d|x|}{dx} =
+\frac{x}{|x|} =
+\left\{
+	\begin{array}{ll}
+		\hfill 1,  & \mbox{if } x > 0 \\
+		-1, & \mbox{if } x < 0
+	\end{array}
+\right.
+\end{equation}
+
+The absolute value function was chosen as the recurrent nonlinearity because it displays a number of desirable properties: 
 
 \begin{itemize}
-\item Nonlinear: This is a requirement for useful computations to be possible
-\item Unbounded: Can I make an argument for why this is an important thing? Something somthing Turing-complete?
-\item Idempotent: This aspect of stability may allow for long term, high precision storage of information without specialized architectural design
-\item (Almost) Everywhere differentiable: It is (almost) everywhere differentiable, with unit-length derivatives of either -1 or 1
-\item Norm-preserving: It is norm-preserving, both for each individual component of the vector, and also for the vector as a whole.
-The absolute value function cannot, by itself, cause gradients to explode, nor vanish
+\item \textbf{Non-saturating}: Completely prevents loss of sensitivity to input which can occur, for example, in sigmoidal functions or ReLU in its negative domain.
+\item \textbf{Unbounded above}: This may allow for the ability to count, similar to an LSTM cell, although we have not yet tested for such.
+\item \textbf{Idempotent}: To be more specific, idempotent if the self-recurrent connection is 1.0. This aspect of stability may allow for long term, high precision storage of information without any specialized architectural design.
+\item \textbf{Almost everywhere differentiable}: With the exception of x = 0, it has unit-length derivatives of either -1 or 1. This is ideal for the gradient backward pass.
+\item \textbf{Norm-preserving}: It is norm-preserving, both element-wise, and for the vector as a whole.
 \end{itemize}
+
+These last two properties ensure that the absolute value function cannot, by itself, cause activations or gradients to explode or vanish.
 
 Generic restatements about why norm preservation is important when training recurrent neural networks.
 
@@ -178,6 +211,14 @@ Others [REF] [REF] have experimented with using the absolute value function in R
 We speculate that it has not received much attention as of yet, because very special care must be taken to control the spectral radius of the recurrent matrix.
 
 Something about absolute value function being the only continuous norm preserving nonlinearity (is that true?).
+
+\subsection{Diagonal Recurrent Matrix}
+
+Talk about the computational advantages, as well as suggesting why this might produce a good prior for generalization.
+
+Sparseness appears to help with generalization on NLP tasks, as shown in \citet{2018arXiv180808720D}, where the use of block diagonal matrices greatly reduces the parameter count, while actually boosting test set performance.
+
+Also mention connection to leaky integrators.
 
 \subsection{Constraints}
 
