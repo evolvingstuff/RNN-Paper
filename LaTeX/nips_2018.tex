@@ -128,7 +128,7 @@ Note that this notation represents the absolute value function applied element-w
 
 
 
-An absolute value activation function in the recurrent hidden layer has been chosen because of some of its desirable properties:
+An absolute value activation function in the recurrent hidden layer has been chosen due to some of its desirable properties:
 
 \begin{equation}
 |x| =
@@ -187,19 +187,22 @@ Also mention connection to leaky integrators.
 
 Maybe mention something about possibility for much more efficient version of RTRL.
 
-\subsection{Constraints}
+%\subsection{No Recurrent Bias}
+
+%Mention that while not strictly necessary, it appears to help performance.
+
+\subsection{Constrained Recurrent Weights}
+
+One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can and will violently explode. Fortunately this problem can be avoided by constraining the magnitude of recurrent weights the range of [-1, 1]. This can be interpreted as a very simplistic way of limiting the spectral radius of the recurrent matrix.
+
+%footnote?
+Somewhat unexpectedly, it turns out that some tasks can be solved even if the recurrent weights are set to a fixed values of 1.0. However, it is more often the case that leaving the weights plastic leads to better training outcomes.
+
+%In fact (double check) because of the constrained structure, these “recurrent factors” can straightforwardly tell us the singular values, eigenvalues, spectral radius of the linear transformation. (I think the fact that we use no biases helps because it remains linear rather than affine.)
 
 Postulate that absolute value function hasn’t been explored much, particularly for recurrent neural nets, because without the proper constraints, its values tend to rapidly blow up.
 
-\subsubsection{Limited [-1, 1] range}
-Important to have these constraints, otherwise blows up.
-This is an extremely simple way of limiting the spectral radius of the matrix.
-In fact (double check) because of the constrained structure, these “recurrent factors” can straightforwardly tell us the singular values, eigenvalues, spectral radius of the linear transformation. (I think the fact that we use no biases helps because it remains linear rather than affine.)
-
-Mention that on some tasks, it often ends up using very different “signatures” of recurrent factor values.
-
-Mention importance of initializing to 1.0 here? Different section?
-\subsubsection{Two complementary types of gradient clipping}
+\subsection{Two Complementary Forms of Gradient Clipping}
 
 Some form of gradient clipping is standard practice for RNNs [REF], but to our knowledge, this is the first application of both global and localized clipping (and it is important to do both!)
 
@@ -243,6 +246,8 @@ Weight initialization scheme
 *Try with mini-batches
 Hidden layer sizes
 Poor-man’s gate sizes
+
+No biases in hidden layer.
 
 Maybe make a table of these things for all the experiments? That would be pleasant to read
 
@@ -332,6 +337,8 @@ Agent's Motivations & 91 & \textbf{96.3} & +5.3 \\
 \end{tabular}
 
 \end{table}
+
+Mention that on some tasks, it often ends up using very different “signatures” of recurrent factor values.
 
 As far as we are aware, these are the strongest results to date using a “plain” neural neural architecture on the 1k, weakly supervised version of the bAbI tasks.
 
