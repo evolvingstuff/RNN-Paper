@@ -41,7 +41,8 @@ Morgan Weaver\\
 \maketitle
 \begin{abstract}
 
-Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. They also incur a greater computational burden than their feedforward counterparts. Attempts to circumvent these problems have generally led in the direction of increasingly complex architectures and training methodologies. We propose Diagnet, a simple RNN model which consists of three core components: 1) an efficient diagonal hidden-to-hidden recurrent matrix, 2) an absolute value activation function, and 3) the application of constraints to the recurrent parameter weights and gradient norms during training. Despite the decoupled and simplistic nature of Diagnet's hidden units, it significantly outperforms Long Short-Term Memory on the 1k version of the bAbI text understanding tasks from Facebook Research. Diagnet acheives higher test set results on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
+%TODO: cite Rumelhart?
+Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. They also incur a greater computational burden than their feedforward counterparts. Attempts to circumvent these problems have generally led in the direction of increasingly complex architectures and training methodologies. We propose Diagnet, a simple RNN model which consists of three core components: 1) an efficient diagonal hidden-to-hidden recurrent matrix, 2) an absolute value activation function, and 3) the application of constraints to the recurrent parameter weights and gradient norms during training. Despite the decoupled and simplistic nature of Diagnet's hidden units, it significantly outperforms Long Short-Term Memory on the 1k version of the bAbI text understanding tasks from Facebook Research. Diagnet acheives higher test set results than LSTM on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
   
 % and allows for the use of significantly more hidden neurons than standard fully-connected RNNs. 
 
@@ -49,17 +50,19 @@ Recurrent neural networks are a challenge to train, in large part due to the wel
 
 \section{Introduction}
 
-Recurrent neural networks represent one of the most important deep learning architectures for handling sequential data.  They are increasingly being used across a wide variety of domains, such as time series prediction \citep{Giles2001}, connected handwriting recognition \citep{graves2009offline}, large-vocabulary speech recognition \citep{SakSB14}, modeling of chaotic phenomena \citep{PhysRevLett.120.024102}, machine translation \citep{bahdanau2014neural, mikolov2010recurrent}, robot control \citep{oubbati2005kinematic}, and protein homology detection \citep{el2008predicting}.
+%TODO: probably should cite more recent examples, because the word "increasingly" implies recent stuff
+%TODO: not sure we should refer to all RNNs as being "deep learning", as there are "deep" RNNs, but Diagnot is not.
+%TODO: cite automatic differentiation && black box optimization
+%TODO: look through things I've cited on Twitter
+Recurrent neural networks (RNNs) are a powerful class of machine learning model specifically designed to handle sequential data. RNNs adpatively learn to process sequences one step at a time, passing forward their own prior computations, which are then incorporated with the input at the next step. This behavior produces a deep computational graph which can be optimized using automatic differentiation or other methods. RNNs are increasingly being used across a wide variety of domains, such as time series prediction \citep{Giles2001}, connected handwriting recognition \citep{graves2009offline}, large-vocabulary speech recognition \citep{SakSB14}, modeling of chaotic phenomena \citep{PhysRevLett.120.024102}, machine translation \citep{bahdanau2014neural, mikolov2010recurrent}, robot control \citep{oubbati2005kinematic}, and protein homology detection \citep{el2008predicting}.
 
 We are interested in addressing two widely-cited pain points of RNN performance.  The first being the vanishing and exploding gradient problem \citep{pascanu2013difficulty, bengio2013advances, pascanu2012understanding}, and the second being performance over increasing time steps \citep{Gers2000, hoch97}.  We address these issues by implementing three elements that have not yet been exhibited in combination in neural net design. 
 
 %TODO: second point above should be about computational efficiency, not training accuracy
 
-%paragraph about vanishing gradients
-%mention that most architectures (gated) try to avoid the total number of applications of nonlinearity
-%notable exception to that being IRNN and uRNN
+Paragraph about vanishing gradients. Mention that most architectures (gated) try to avoid the total number of applications of nonlinearity. Notable exception to that being IRNN and uRNN.
 
-%paragraph about computational burden
+Paragraph about computational burden.
 
 %In the following paper, we present a brief outline of foundational work in the problem space to historically %contextualize Diagnet’s architecture.  Then, we present a discussion of the architecture and mechanisms of Diagnet, %along with a visual tool for building an intuitive understanding of Diagnet’s units and their behavior.  Next we %present a series of common benchmarking tasks, the results of each task, and finally conclude with a discussion of %Diagnet’s performance and behavior based on experimental results.  We hope to offer an interesting and powerful new %tool for sequence modeling in our introduction of Diagnet, while laying the groundwork for exploration in different %problem spaces, architectural innovation, and interaction with the Machine Learning community.
 
@@ -85,9 +88,13 @@ We are interested in addressing two widely-cited pain points of RNN performance.
 %summarized in Sections \ref{gen_inst}, \ref{headings}, and
 %\ref{others} below.
 
+%TODO: a "we present" paragraph
+
 
 \section{Architecture}
 \label{headings}
+
+%TODO: link to github repository somewhere...
 
 Densely connected from input to hidden layer.
 Only a single, “shallow” hidden layer.
@@ -100,6 +107,8 @@ There are no gates
 Densely connected from hidden layer to output
 %All headings should be lower case (except for first word and proper
 %nouns), flush left, and bold.
+
+%TODO: make analogy of LSTM, but with all the gates and recurrent weights stripped away, leaving just the CEC
 
 %TODO: Where did the arrows go?!?
 
@@ -116,6 +125,10 @@ Densely connected from hidden layer to output
 Note that this notation represents the absolute value function applied element-wise to the vector.
 
 \subsection{Absolute Value Activation Function}
+
+
+
+An absolute value activation function in the recurrent hidden layer has been chosen because of some of its desirable properties:
 
 \begin{equation}
 |x| =
@@ -138,29 +151,31 @@ Note that this notation represents the absolute value function applied element-w
 \right.
 \end{equation}
 
-An absolute value activation function in the recurrent hidden layer has been chosen because of some of its desirable properties: 
+ 
 
 \begin{itemize}
-\item \textbf{Non-saturating}: Completely prevents loss of sensitivity to input which can occur, for example, in sigmoidal functions or ReLU in its negative domain.
-\item \textbf{Unbounded above}: This may allow for the ability to count, similar to an LSTM cell, although we have not yet tested for such.
-\item \textbf{Idempotent}: To be more specific, idempotent if the self-recurrent connection is 1.0. This aspect of stability may allow for long term, high precision storage of information without any specialized architectural design.
-\item \textbf{Almost everywhere differentiable}: With the exception of x = 0, it has unit-length derivatives of either -1 or 1. This is ideal for the gradient backward pass.
-\item \textbf{Norm-preserving}: It is norm-preserving, both element-wise, and for the vector as a whole.
+%\item \textbf{Non-saturating}: Completely prevents loss of sensitivity to small changes of input which can occur, for example, in sigmoidal functions, or in ReLU for negative inputs.
+%TODO: this analogy is fuzzy and needs to be tightened, because it doesn't mention the need for absence of new input
+\item \textbf{Idempotent}: Assuming an absence of new input, and with a self-recurrent connection of 1.0, long term, high precision storage of information is possible without any specialized architectural design.
+\item \textbf{Forward pass norm-preserving}: Element-wise application of the absolute value activation function preserves the length of its vector argument. This is true both element-wise, and for the vector as a whole.
+\item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors being passed back through the computational graph enjoy the same benefits as the activation vectors in the forward direction.
 \end{itemize}
 
-These last two properties ensure that the absolute value function cannot, by itself, cause activations or gradients to explode or vanish.
+These last two properties ensure that the absolute value activation function cannot, by itself, cause activations or gradients to explode or vanish.
 
 Generic restatements about why norm preservation is important when training recurrent neural networks.
 
 It is interesting to note that LSTM and GRU preserve gradients over time by mostly avoiding the direct application of nonlinearities as much as possible. ResNet is intuitively similar in this sense. (TODO: Highway networks?) However, it is likely the case that many potentially useful algorithms or dynamical behaviors require the application of a long sequence of nonlinear transformations, rather than simply preserving a small number of computations/transformations over extensive spans of time.
 
 One toy problem that requires a long, unbroken chain of nonlinear transformations is sequential parity, which will be visited below (and which LSTM and GRU are completely unable to solve for T > 10.)
-
-Others [REF] [REF] have experimented with using the absolute value function in neural networks, but historically this has been a largely unexplored activation function.
  
-We speculate that it has not received much attention as of yet, because very special care must be taken to control the spectral radius of the recurrent matrix.
+
 
 Something about absolute value function being the only continuous norm preserving nonlinearity (is that true?).
+
+Others [REF] [REF] have experimented with using the absolute value function in neural networks, but historically this has been a largely unexplored activation function.
+
+We speculate that it has not received much attention as of yet, because very special care must be taken to control the spectral radius of the recurrent matrix.
 
 \subsection{Diagonal Recurrent Matrix}
 
@@ -169,6 +184,8 @@ Talk about the computational advantages, as well as suggesting why this might pr
 Sparseness appears to help with generalization on NLP tasks, as shown in \citet{2018arXiv180808720D}, where the use of block diagonal matrices greatly reduces the parameter count, while actually boosting test set performance.
 
 Also mention connection to leaky integrators.
+
+Maybe mention something about possibility for much more efficient version of RTRL.
 
 \subsection{Constraints}
 
@@ -231,9 +248,11 @@ Maybe make a table of these things for all the experiments? That would be pleasa
 
 \subsection{Facebook bAbI Question-Answering}
 
-bAbI is a set of 20 synthetic natural language understanding tasks created by \citet{2015arXiv150205698W}. Each task has been designed to test language models for particular logical and reasoning capabilities, such as induction, deduction, chaining of facts, temporal ordering of events, as well as others. It is suggested that solving these "toy" problems is a necessary (although not sufficient) precondition to the development of truly intelligent systems.
+bAbI is a set of 20 synthetic text understanding tasks created by \citet{2015arXiv150205698W} at Facebook Research. Each task has been designed to probe language models for particular logical and reasoning capabilities, such as induction, deduction, chaining of facts, temporal ordering of events, as well as others. It is suggested that solving these "toy" problems is a necessary (although not sufficient) precondition to the development of truly intelligentfa systems.
 
-In the paper, it was shown that a plain LSTM network was unable to solve any of the 20 tasks, where success had been defined as attaining an accuracy of 95\% or more.
+Add a footnote with link to bAbI.
+
+In the paper, it was shown that a basic LSTM network was unable to solve any of the 20 tasks, where success had been defined as attaining an accuracy of 95\% or more.
 
 The initial, significant improvement over a plain RNN baseline was in the form of MemNNs, previously introduced in [REF]. And since then a number of new techniques have been successfully applied to bAbI, generally falling into two overall domains: augmented memories, and attentional mechanisms.
 
@@ -272,13 +291,13 @@ John moved to the bedroom. & & \\
 \end{tabular}
 \end{table}
 
-In the accompanying paper, Weston et al introduce Memory Networks in order to overcome many of the shortcomings of a plain LSTM network. 
+In the accompanying paper, Weston et al introduce Memory Networks in order to overcome many of the shortcomings of LSTM. 
 
 Additionally, it has been found that adding attentional mechanisms to input history has resulted in significantly improved performance.
 
 ADD MORE STUFF ABOUT THAT HERE
 
-Note that in this work we are not comparing Diagnet directly to any of the aforementioned “augmented” neural architectures. Instead, we demonstrate that Diagnet significantly outperforms LSTM and GRU on many of these 20 tasks, even despite using a much simpler and computationally efficient internal architecture.
+Note that in this work we are not comparing Diagnet directly to any of the aforementioned “augmented” neural architectures. Instead, we demonstrate that Diagnet significantly outperforms LSTM on many of these 20 tasks, even despite using a much simpler and computationally efficient internal architecture.
 
 \begin{table}
 
@@ -386,7 +405,7 @@ Diagnet's architecture suggests many avenues for additional tasks and performanc
 As RNNs have historically been utilized with great success in NLP tasks, we intend to continue exploring Diagnet's capabilities in this problem space.  Another area in which complex long-range sequences are of great interest is computational genomics. The roughly 1.5-gigabytes of information in the human genome may benefit from an RNN architecture supporting wider hidden layers.  
 
 \section{Conclusion}
-Here we outline the features, mechanisms, and benchmarking performance of Diagnet. Results were robust over a variety of tasks, most notably in bAbI question-answering tasks, where Diagnet’s accuracy scores showed up to 36\% percent improvement over existing architectures such as LSTM and GRU.  While memory augmentation and attentional mechanisms offer clear advantages as architectural additions, we choose to focus on the core RNN functionality in this paper.  Future work may incorporate attentional mechanisms, memory augmentation, and additional task spaces such as semantic embeddings, genetic sequencing, and computer vision.  Diagnet’s novel architecture offers great flexibility in hidden layering, and number of steps in various memory tasks, as well as potential for distributed computing.  Due to the fact that Diagnet does not have gating mechanisms in its current iteration, it is largely input-driven, and tends to perform best in tasks where an output sequence is expected after arbitrary delays. The work presented here represents a first glance at Diagnet’s mechanisms and potential, which the authors hope to expand in future work. 
+Here we outline the features, mechanisms, and benchmarking performance of Diagnet. Results were robust over a variety of tasks, most notably in bAbI question-answering tasks, where Diagnet’s accuracy scores showed up to 40\% percent improvement over Long Short-Term Memory.  While memory augmentation and attentional mechanisms offer clear advantages as architectural additions, we choose to focus on the core RNN functionality in this paper.  Future work may incorporate attentional mechanisms, memory augmentation, and additional task spaces such as semantic embeddings, genetic sequencing, and computer vision.  Diagnet’s novel architecture offers great flexibility in hidden layering, and number of steps in various memory tasks, as well as potential for distributed computing.  Due to the fact that Diagnet does not have gating mechanisms in its current iteration, it is largely input-driven, and tends to perform best in tasks where an output sequence is expected after arbitrary delays. The work presented here represents a first glance at Diagnet’s mechanisms and potential, which the authors hope to expand in future work. 
 
 %
 %\subsection{Footnotes}
