@@ -41,7 +41,7 @@ Morgan Weaver\\
 \maketitle
 \begin{abstract}
 
-Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. They are also much more computationally expensive to evaluate and train than their feedforward counterparts. Attempts to circumvent these problems have led to increasingly complex architectures and training methods. We propose Diagnet, a simple RNN design which consists of three core components: 1) an efficient diagonal hidden-to-hidden recurrent matrix, 2) the absolute value function as the element-wise nonlinearity, and 3) the application of constraints to both the recurrent parameter weights and gradient norms during training. Despite the segregated and simplistic nature of Diagnet's recurrent units, significant generalization performance improvement is seen over Long Short-Term Memory on the 1k version of the bAbI tasks. Diagnet scores higher in testing on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
+Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. They also incur a greater computational burden than their feedforward counterparts. Attempts to circumvent these problems have generally led in the direction of increasingly complex architectures and training methodologies. We propose Diagnet, a simple RNN model which consists of three core components: 1) an efficient diagonal hidden-to-hidden recurrent matrix, 2) an absolute value activation function, and 3) the application of constraints to the recurrent parameter weights and gradient norms during training. Despite the decoupled and simplistic nature of Diagnet's hidden units, it significantly outperforms Long Short-Term Memory on the 1k version of the bAbI text understanding tasks from Facebook Research. Diagnet acheives higher test set results on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
   
 % and allows for the use of significantly more hidden neurons than standard fully-connected RNNs. 
 
@@ -50,12 +50,18 @@ Recurrent neural networks are a challenge to train, in large part due to the wel
 \section{Introduction}
 
 Recurrent neural networks represent one of the most important deep learning architectures for handling sequential data.  They are increasingly being used across a wide variety of domains, such as time series prediction \citep{Giles2001}, connected handwriting recognition \citep{graves2009offline}, large-vocabulary speech recognition \citep{SakSB14}, modeling of chaotic phenomena \citep{PhysRevLett.120.024102}, machine translation \citep{bahdanau2014neural, mikolov2010recurrent}, robot control \citep{oubbati2005kinematic}, and protein homology detection \citep{el2008predicting}.
-      
+
 We are interested in addressing two widely-cited pain points of RNN performance.  The first being the vanishing and exploding gradient problem \citep{pascanu2013difficulty, bengio2013advances, pascanu2012understanding}, and the second being performance over increasing time steps \citep{Gers2000, hoch97}.  We address these issues by implementing three elements that have not yet been exhibited in combination in neural net design. 
 
 %TODO: second point above should be about computational efficiency, not training accuracy
 
-In the following paper, we present a brief outline of foundational work in the problem space to historically contextualize Diagnet’s architecture.  Then, we present a discussion of the architecture and mechanisms of Diagnet, along with a visual tool for building an intuitive understanding of Diagnet’s units and their behavior.  Next we present a series of common benchmarking tasks, the results of each task, and finally conclude with a discussion of Diagnet’s performance and behavior based on experimental results.  We hope to offer an interesting and powerful new tool for sequence modeling in our introduction of Diagnet, while laying the groundwork for exploration in different problem spaces, architectural innovation, and interaction with the Machine Learning community.
+%paragraph about vanishing gradients
+%mention that most architectures (gated) try to avoid the total number of applications of nonlinearity
+%notable exception to that being IRNN and uRNN
+
+%paragraph about computational burden
+
+%In the following paper, we present a brief outline of foundational work in the problem space to historically %contextualize Diagnet’s architecture.  Then, we present a discussion of the architecture and mechanisms of Diagnet, %along with a visual tool for building an intuitive understanding of Diagnet’s units and their behavior.  Next we %present a series of common benchmarking tasks, the results of each task, and finally conclude with a discussion of %Diagnet’s performance and behavior based on experimental results.  We hope to offer an interesting and powerful new %tool for sequence modeling in our introduction of Diagnet, while laying the groundwork for exploration in different %problem spaces, architectural innovation, and interaction with the Machine Learning community.
 
 %\paragraph{New preprint option for 2018}
 %If you wish to post a preprint of your work online, e.g., on arXiv,
@@ -89,7 +95,7 @@ Hidden layer has no biases.
 Hidden layer is recurrently connected by a diagonal matrix; thus every hidden neuron is solely recurrently self-connected.
 Self connections of hidden neurons are clamped to lie in the range [-1.0, 1.0]
 Self connections of hidden neurons are initialized at 1.0.
-Each hidden neuron makes use of the absolute value function as a nonlinearity.
+Each hidden neuron makes use of an absolute value activation function.
 There are no gates
 Densely connected from hidden layer to output
 %All headings should be lower case (except for first word and proper
@@ -109,7 +115,7 @@ Densely connected from hidden layer to output
 
 Note that this notation represents the absolute value function applied element-wise to the vector.
 
-\subsection{Absolute Value Function}
+\subsection{Absolute Value Activation Function}
 
 \begin{equation}
 |x| =
@@ -132,7 +138,7 @@ Note that this notation represents the absolute value function applied element-w
 \right.
 \end{equation}
 
-The absolute value function was chosen as the recurrent nonlinearity because it displays a number of desirable properties: 
+An absolute value activation function in the recurrent hidden layer has been chosen because of some of its desirable properties: 
 
 \begin{itemize}
 \item \textbf{Non-saturating}: Completely prevents loss of sensitivity to input which can occur, for example, in sigmoidal functions or ReLU in its negative domain.
@@ -146,11 +152,11 @@ These last two properties ensure that the absolute value function cannot, by its
 
 Generic restatements about why norm preservation is important when training recurrent neural networks.
 
-LSTM and GRU preserve the gradient over time by mostly avoiding the direct application of nonlinearities as much as possible. ResNet is intuitively similar in this sense. (TODO: Highway networks?) However, it is likely the case that many potentially useful algorithms or dynamical behaviors require the application of a long sequence of nonlinear transformations, rather than simply preserving a small number of computations/transformations over extensive spans of time.
+It is interesting to note that LSTM and GRU preserve gradients over time by mostly avoiding the direct application of nonlinearities as much as possible. ResNet is intuitively similar in this sense. (TODO: Highway networks?) However, it is likely the case that many potentially useful algorithms or dynamical behaviors require the application of a long sequence of nonlinear transformations, rather than simply preserving a small number of computations/transformations over extensive spans of time.
 
 One toy problem that requires a long, unbroken chain of nonlinear transformations is sequential parity, which will be visited below (and which LSTM and GRU are completely unable to solve for T > 10.)
 
-Others [REF] [REF] have experimented with using the absolute value function in RNNs, but overall this is a largely unexplored activation function.
+Others [REF] [REF] have experimented with using the absolute value function in neural networks, but historically this has been a largely unexplored activation function.
  
 We speculate that it has not received much attention as of yet, because very special care must be taken to control the spectral radius of the recurrent matrix.
 
