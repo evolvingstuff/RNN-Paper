@@ -223,10 +223,10 @@ Mention lack of bias vector to preserve idempotency.
 
 \subsection{Constrained Recurrent Weights}
 
-One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can violently explode. If the recurrent matrix has a spectral value greater than 1, a cycle of unbounded self amplification can quickly lead to numeric overflow. Fortunately this problem is avoidable by constraining the magnitude of recurrent weights to the range [-1, 1]. This can be interpreted as a very simplistic way of limiting spectral radius.
+One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can violently explode. If the recurrent matrix has a spectral radius greater than 1, a cycle of unbounded self amplification can quickly lead to numeric overflow. Fortunately this problem is avoidable by constraining the magnitude of recurrent weights to the range [-1, 1].
 
 %footnote?
-Somewhat unexpectedly, it turns out that some tasks can be solved even if the recurrent weights are set to fixed values of 1. However, it is more often the case that allowing the weights to change with learning leads to better models.
+Somewhat unexpectedly, it turns out that some tasks can be solved even if the recurrent weights are held constant at 1. However, it is more often the case that allowing the weights to change with learning leads to better models.
 
 %In fact (double check) because of the constrained structure, these “recurrent factors” can straightforwardly tell us the singular values, eigenvalues, spectral radius of the linear transformation. (I think the fact that we use no biases helps because it remains linear rather than affine.)
 
@@ -241,7 +241,8 @@ Critical to do a combination of both global and local norm clipping. Either alon
 
 \subsection{Efficient Real-Time Recurrent Learning Implementation}
 
-Real-time recurrent learning (RTRL) is a alternative approach to training RNNs \citep{RTRL}. It is not currently in use due to computational inefficiency as compared to backpropagation through time (BPTT). Modern RNNs are generally trained using BPTT. However, Diagnet's decoupled hidden layer eliminates any exchange of information between the hidden neurons, and as a consequence allows for a significantly more efficient RTRL implementation.
+%TODO: is it inefficient in number of operations, or just in memory size of params * hidden nodes?
+Real-time recurrent learning (RTRL) is a alternative approach to training RNNs \citep{RTRL}. Instead of building a deep computational graph extending back in time, all partial derivatives are maintained and carried forward with each timestep. It is not currently in use due to computational inefficiency as compared to backpropagation through time (BPTT). Modern RNNs are generally trained using BPTT. However, Diagnet's decoupled hidden layer eliminates any exchange of information between the hidden neurons, and a fortunate side-effect of that is that there exists a significantly more efficient RTRL implementation.
 
 TODO: prove this works.
 
@@ -250,7 +251,11 @@ TODO: prove this works.
 Mention advantages and also possibility of really efficient RTRL implementation.
 
 \begin{equation}
-{\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_t := \textrm{sgn} \left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r f_{j_{t-1}} \right) x_{j_t} + r {\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_{t-1}
+{\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_t := \textrm{sgn} \left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) x_{j_t} + r_j {\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_{t-1}
+\end{equation}
+
+\begin{equation}
+{\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_t := \textrm{sgn} \left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) f_{j_{t-1}} + r_j {\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_{t-1}
 \end{equation}
 
 Big O analysis of this.
