@@ -118,7 +118,7 @@ Densely connected from hidden layer to output
 
 \begin{figure}[h]
   \centering
-  \includestandalone[scale=1.0]{figures/diagnet1}
+  \includestandalone[scale=0.8]{figures/diagnet1}
   \caption{Diagnet structural diagram.}
 \end{figure}
 
@@ -140,11 +140,10 @@ Maybe mention something about possibility for much more efficient version of RTR
 
 %Mention that while not strictly necessary, it appears to help performance.
 
+Mention single hidden layer
+
 Number of operations scales linearly with hidden layer size.
 
-\subsection{Single Hidden Layer}
-
-Mention advantages and also possibility of really efficient RTRL implementation.
 
 \subsection{Absolute Value Activation Function}
 
@@ -222,14 +221,12 @@ Mention lack of bias vector to preserve idempotency.
 
 \subsection{Constrained Recurrent Weights}
 
-One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can violently explode. If the recurrent matrix has a spectral value greater than 1, a cycle of unbounded self amplification can quickly lead to numeric overflow. Fortunately this problem is avoidable by constraining the magnitude of recurrent weights the range [-1, 1]. This can be interpreted as a very simplistic way of limiting spectral radius.
+One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can violently explode. If the recurrent matrix has a spectral value greater than 1, a cycle of unbounded self amplification can quickly lead to numeric overflow. Fortunately this problem is avoidable by constraining the magnitude of recurrent weights to the range [-1, 1]. This can be interpreted as a very simplistic way of limiting spectral radius.
 
 %footnote?
 Somewhat unexpectedly, it turns out that some tasks can be solved even if the recurrent weights are set to fixed values of 1. However, it is more often the case that allowing the weights to change with learning leads to better models.
 
 %In fact (double check) because of the constrained structure, these “recurrent factors” can straightforwardly tell us the singular values, eigenvalues, spectral radius of the linear transformation. (I think the fact that we use no biases helps because it remains linear rather than affine.)
-
-Postulate that absolute value function hasn’t been explored much, particularly for recurrent neural nets, because without the proper constraints, its values tend to rapidly blow up.
 
 
 \subsection{Two Complementary Forms of Gradient Clipping}
@@ -239,6 +236,20 @@ Some form of gradient clipping is standard practice for RNNs [REF], but to our k
 Appears to be critical to limit the size of the overall norm of the gradient, particularly for some of the really long-delay tasks.
 
 Critical to do a combination of both global and local norm clipping. Either alone is insufficient.
+
+\subsection{Efficient RTRL implementation}
+
+TODO: prove this works.
+
+Mention advantages and also possibility of really efficient RTRL implementation.
+
+\begin{equation}
+{\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_t := \textrm{sgn} \left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r f_{j_{t-1}} \right) + r {\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_{t-1}
+\end{equation}
+
+Big O analysis of this.
+
+Make diagram for this?
 
 \section{Experiments}
 \label{others}
@@ -389,6 +400,8 @@ This suggests that Diagnet may represent
 %Diagonal hidden state
 %%%%%%%%%%%%%%%%%%%%%%%%
 
+%\textbf{Diagonal hidden state}
+
 %It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  
 %Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982.  Subsequently, Schmidhuber \citet{6795261} developed the Neural History Compressor and was able to preserve information over time steps, while compressing information.  
 
@@ -407,6 +420,8 @@ SCRN (2015)--At the same time, Structurally Constrained Recurrent Networks (SCRN
 %Absolute value function
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%\textbf{Absolute value activation function}
+
 Commonly used activation functions like sigmoid, hyperbolic tangent, and ReLU are not norm-preserving. Gated RNN architectures like LSTM and GRU implicitly adopt a strategy of preserving gradients over time by minimizing the degree to which hidden state transformations - both linear and nonlinear - are applied. ResNet \citep{2015arXiv151203385H} and Highway Networks \citep{2015arXiv150500387S} make use of this same design principle. However, stands to reason that many potentially useful algorithms and dynamical behaviors require the application of a long chain of complex transformations, rather than simply preserving a small handful of them over extensive spans of time.
 
 %TODO: mention this or not?
@@ -424,6 +439,8 @@ We speculate that the absolute value function has not received much attention as
 %%%%%%%%%%%%%%
 %Constraints 
 %%%%%%%%%%%%%%
+
+%\textbf{Constraints and gradient clipping}
 
 %Need gradient clipping stuff here
 
