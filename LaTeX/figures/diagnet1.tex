@@ -8,7 +8,7 @@
   every neuron/.style={
     circle,
     draw,
-    minimum size=0.5cm,
+    minimum size=0.3cm,
     fill=gray!60
   },
   neuron missing/.style={
@@ -41,7 +41,16 @@
     \draw [->] (hidden-\i) -- (output-\j);
 
 \foreach \j in {1,...,5}
-  \draw [->] (hidden-\j) to [out=-35,in=-105,loop,looseness=5.5] (hidden-\j);
+  \draw [->] (hidden-\j) to [out=-35,in=-105,loop,looseness=12] (hidden-\j);
+  
+%\node[text width=6cm] (note1) at (2.125, 1.25) {
+%   Input Layer};
+%   
+%\node[text width=6cm] (note1) at (4.75, 1.25) {
+%   Hidden Layer};
+%   
+%\node[text width=6cm] (note1) at (7.5, 1.25) {
+%   Output Layer};
 
 \end{tikzpicture}
 

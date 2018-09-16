@@ -96,6 +96,8 @@ Paragraph about computational burden.
 
 %TODO: link to github repository somewhere...
 
+%TODO: give a brief, few sentence long description of the architecture here...
+
 Densely connected from input to hidden layer.
 Only a single, “shallow” hidden layer.
 Hidden layer has no biases.
@@ -108,6 +110,8 @@ Densely connected from hidden layer to output
 %All headings should be lower case (except for first word and proper
 %nouns), flush left, and bold.
 
+%TODO: mention no bias in hidden layer
+
 %TODO: make analogy of LSTM, but with all the gates and recurrent weights stripped away, leaving just the CEC
 
 %TODO: Where did the arrows go?!?
@@ -118,13 +122,29 @@ Densely connected from hidden layer to output
   \caption{Diagnet structural diagram.}
 \end{figure}
 
-%\begin{equation}
-%  \mathbf{h}_t := \textrm{abs}( \mathbf{u} \circ \mathbf{h}_{t-1} + \mathbf{Vx}_t )
-%\end{equation}
+\subsection{Diagonal Recurrent Matrix}
 
-%Note that abs() is a vectorized function, applied element-wise to each compontent of its argument.
+Talk about the computational advantages, as well as suggesting why this might produce a good prior for generalization.
 
-Mention the lack of a bias vector here?
+Hadamard Product.
+
+Sparseness appears to help with generalization on NLP tasks, as shown in \citet{2018arXiv180808720D}, where the use of block diagonal matrices greatly reduces the parameter count, while actually boosting test set performance.
+
+Also mention connection to leaky integrators.
+
+Maybe mention something about possibility for much more efficient version of RTRL.
+
+%TODO: wisdom of crowds?
+
+%\subsection{No Recurrent Bias}
+
+%Mention that while not strictly necessary, it appears to help performance.
+
+Number of operations scales linearly with hidden layer size.
+
+\subsection{Single Hidden Layer}
+
+Mention advantages and also possibility of really efficient RTRL implementation.
 
 \subsection{Absolute Value Activation Function}
 
@@ -158,8 +178,6 @@ The absolute value activation function has a number of desirable properties:
 %TODO: make this a footnote?
 %Note that abs() represents the vectorized version of the absolute value function.
 
-
-
 \begin{itemize}
 \item \textbf{Idempotent}: In the absence of new input, and with self-recurrent connections of 1.0, long term, high precision storage of information is possible without any specialized architectural design.
 \begin{equation}
@@ -181,7 +199,6 @@ The absolute value activation function has a number of desirable properties:
 \end{equation}
 \item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors being passed backward through the computational graph enjoy the same norm-preserving benefits as the activation vectors in the forward direction.
 
-
 %\begin{equation}
 %{\left \| {\frac{\partial f}{\partial x_k}} \right \|}_2 = 
 %\sqrt{{\frac{\partial f}{\partial x_k}}^{2}} = 
@@ -199,45 +216,13 @@ The absolute value activation function has a number of desirable properties:
 
 These norm-preserving properties ensure that the absolute value activation function cannot, by itself, cause activations or gradients to explode or vanish.
 
-Generic restatements about why norm preservation is important when training recurrent neural networks.
+Mention lack of bias vector to preserve idempotency.
 
-It is interesting to note that LSTM and GRU preserve gradients over time by mostly avoiding the direct application of nonlinearities as much as possible. ResNet is intuitively similar in this sense. (TODO: Highway networks?) However, it is likely the case that many potentially useful algorithms or dynamical behaviors require the application of a long sequence of nonlinear transformations, rather than simply preserving a small number of computations/transformations over extensive spans of time.
-
-One toy problem that requires a long, unbroken chain of nonlinear transformations is sequential parity, which will be visited below (and which LSTM and GRU are completely unable to solve for T > 10.)
- 
-
-
-Something about absolute value function being the only continuous norm preserving nonlinearity (is that true?).
-
-Others [REF] [REF] have experimented with using the absolute value function in neural networks, but historically this has been a largely unexplored activation function.
-
-We speculate that it has not received much attention as of yet, because very special care must be taken to control the spectral radius of the recurrent matrix.
-
-\subsection{Diagonal Recurrent Matrix}
-
-Talk about the computational advantages, as well as suggesting why this might produce a good prior for generalization.
-
-Hadamard Product.
-
-Sparseness appears to help with generalization on NLP tasks, as shown in \citet{2018arXiv180808720D}, where the use of block diagonal matrices greatly reduces the parameter count, while actually boosting test set performance.
-
-Also mention connection to leaky integrators.
-
-Maybe mention something about possibility for much more efficient version of RTRL.
-
-%\subsection{No Recurrent Bias}
-
-%Mention that while not strictly necessary, it appears to help performance.
-
-Number of operations scales linearly with hidden layer size.
-
-\subsection{Single Hidden Layer}
-
-Mention advantages and also possibility of really efficient RTRL implementation.
+%TODO: Generic restatements about why norm preservation is important when training recurrent neural networks.
 
 \subsection{Constrained Recurrent Weights}
 
-One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can violently explode. Fortunately this problem is avoidable by constraining the magnitude of recurrent weights the range [-1, 1]. This can be interpreted as a very simplistic way of limiting spectral radius.
+One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can violently explode. If the recurrent matrix has a spectral value greater than 1, a cycle of unbounded self amplification can quickly lead to numeric overflow. Fortunately this problem is avoidable by constraining the magnitude of recurrent weights the range [-1, 1]. This can be interpreted as a very simplistic way of limiting spectral radius.
 
 %footnote?
 Somewhat unexpectedly, it turns out that some tasks can be solved even if the recurrent weights are set to fixed values of 1. However, it is more often the case that allowing the weights to change with learning leads to better models.
@@ -245,6 +230,7 @@ Somewhat unexpectedly, it turns out that some tasks can be solved even if the re
 %In fact (double check) because of the constrained structure, these “recurrent factors” can straightforwardly tell us the singular values, eigenvalues, spectral radius of the linear transformation. (I think the fact that we use no biases helps because it remains linear rather than affine.)
 
 Postulate that absolute value function hasn’t been explored much, particularly for recurrent neural nets, because without the proper constraints, its values tend to rapidly blow up.
+
 
 \subsection{Two Complementary Forms of Gradient Clipping}
 
@@ -399,12 +385,6 @@ This suggests that Diagnet may represent
 
 %Break this out by features
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%
-%Absolute value function
-%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-DizzyRNN (2016)-abs val. weight matrix unitary transformations, broken into pairs of 2, use 2d rotations. reasonable results. 1-2 tasks
-
 %%%%%%%%%%%%%%%%%%%%%%%%
 %Diagonal hidden state
 %%%%%%%%%%%%%%%%%%%%%%%%
@@ -423,10 +403,23 @@ SCRN (2015)--At the same time, Structurally Constrained Recurrent Networks (SCRN
 2015 saw the introduction of the Independent RNN \citet{LeJH15}, in which the model's (where nodes consist of rectified linear units) recurrent weight matrix is initialized with the identity matrix.  One caveat of this model is that the parameters need careful tuning for the model to remain stable.  The IndRNN showed better results than LSTM on some tasks, but with a simpler architecture.  In Diagnet, however, off-diagonal values in the identity matrix can only ever be zero, and are one-fast Hadamard products, reducing time complexity significantly. 
 %IndRNN  (2018)--uses self-connection in first layer, loses much efficiency.  Many-to-many connection. Very expensive.  Uses relu for nonlinearity rather than our absval.  
 
-%In 1997, Hochreiter and Schmidhuber introduced Long Short-Term Memory (LSTM) \citet{hoch97}, which sought to address the vanishing and exploding gradient problem with constant error flow through specialized units in addition to multiplicative gated memory units, resulting in more efficient storage of information at little computational cost.  
-%Following LSTM, Chung et al. proposed the Gated Feedback Recurrent Neural Network \citet{ChungGCB15}.  
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Absolute value function
+%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%uRNN (2015)-Bengio et al.  addresses vanishing gradient prob, not exploding.  Transition matrix is unitary.  Enorced.  Complex numbers, etc. Decent results.
+Commonly used activation functions like sigmoid, hyperbolic tangent, and ReLU are not norm-preserving. Gated RNN architectures like LSTM and GRU implicitly adopt a strategy of preserving gradients over time by minimizing the degree to which hidden state transformations - both linear and nonlinear - are applied. ResNet \citep{2015arXiv151203385H} and Highway Networks \citep{2015arXiv150500387S} make use of this same design principle. However, stands to reason that many potentially useful algorithms and dynamical behaviors require the application of a long chain of complex transformations, rather than simply preserving a small handful of them over extensive spans of time.
+
+%TODO: mention this or not?
+One toy problem that requires a long, unbroken chain of hidden state transformations is sequential parity, which will be visited below (and which LSTM and GRU are completely unable to solve for T > 10.)
+ 
+%Something about absolute value function being the only continuous norm preserving nonlinearity (is that true?).
+
+Others \citep{DorobantuSR16} [REF] have experimented with using the absolute value function in neural networks, but historically this has been a largely unexplored activation function.
+
+DizzyRNN (2016)-abs val. weight matrix unitary transformations, broken into pairs of 2, use 2d rotations. reasonable results. 1-2 tasks
+
+We speculate that the absolute value function has not received much attention as of yet, mostly because special care must be taken to control the spectral radius of the recurrent matrix.
+
 
 %%%%%%%%%%%%%%
 %Constraints 
