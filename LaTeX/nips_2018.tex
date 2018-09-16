@@ -128,13 +128,7 @@ Mention the lack of a bias vector here?
 
 \subsection{Absolute Value Activation Function}
 
-We will use abs() to represent the vectorized version of the absolute value function:
-
-\begin{equation}
-\textrm{abs}(\mathbf{x}) = \left \langle |x_1|, |x_2|, \dots , |x_k| \right \rangle
-\end{equation}
-
-An absolute value activation function in the recurrent hidden layer has been chosen due to some of its desirable properties:
+The absolute value activation function has a few desirable properties: 
 
 \begin{equation}
 |x| =
@@ -157,7 +151,14 @@ An absolute value activation function in the recurrent hidden layer has been cho
 \right.
 \end{equation}
 
- 
+\begin{equation}
+\textrm{abs}(\mathbf{x}) = \left \langle |x_1|, |x_2|, \dots , |x_k| \right \rangle
+\end{equation}
+
+%TODO: make this a footnote?
+%Note that abs() represents the vectorized version of the absolute value function.
+
+
 
 \begin{itemize}
 \item \textbf{Idempotent}: Assuming an absence of new input, and with self-recurrents connection of 1.0, long term, high precision storage of information is possible without any specialized architectural design.
@@ -170,6 +171,12 @@ An absolute value activation function in the recurrent hidden layer has been cho
 \end{equation}
 \item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors being passed backward through the computational graph enjoy the same norm-preserving benefits as the activation vectors in the forward direction.
 \end{itemize}
+%TODO: not totally sure about this one...
+\begin{equation}
+{\left \| \Delta f \right \|}_2 = 
+\sqrt{{\frac{\partial f}{\partial x_1}}^{2} + {\frac{\partial f}{\partial x_2}}^{2} + \dots + {\frac{\partial f}{\partial x_k}}^{2}} = 
+\sqrt{ {\left[{\frac{x_1}{|x_1|}}\right]}^{2} + {\left[{\frac{x_2}{|x_2|}}\right]}^{2} + \dots + {\left[{\frac{x_k}{|x_k|}}\right]}^{2}}
+\end{equation}
 
 These last two properties ensure that the absolute value activation function cannot, by itself, cause activations or gradients to explode or vanish.
 
