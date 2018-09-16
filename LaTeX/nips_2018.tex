@@ -24,6 +24,7 @@
 \usepackage{microtype}      % microtypography
 \usepackage{tikz}
 \usepackage{standalone}
+%\usepackage{amsmath}
 
 %\setcitestyle{numbers}
 
@@ -104,7 +105,7 @@ Densely connected from input to hidden layer.
 Only a single, “shallow” hidden layer.
 Hidden layer has no biases.
 Hidden layer is recurrently connected by a diagonal matrix; thus every hidden neuron is solely recurrently self-connected.
-Self connections of hidden neurons are clamped to lie in the range [-1.0, 1.0]
+Self connections of hidden neurons are clamped to lie in the range $\left[ -1.0, 1.0 \right]$
 Self connections of hidden neurons are initialized at 1.0.
 Each hidden neuron makes use of an absolute value activation function.
 There are no gates
@@ -200,18 +201,25 @@ The absolute value activation function has a number of desirable properties:
 \end{equation}
 \item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors being passed backward through the computational graph enjoy the same norm-preserving benefits as the activation vectors in the forward direction.
 
+\begin{equation}
+{\left \| {\frac{\partial f}{\partial x_k}} \right \|}_2 = 
+\sqrt{{ \left [ \frac{\partial f}{\partial x_k} \right ] }^{2}} = 
+\sqrt{{ \left [ \textrm{sgn} \left ( \frac{\partial f}{\partial x_k} \right ) \frac{\partial f}{\partial x_k} \right ] }^{2}} = 
+\textrm{sgn} \left ( \frac{\partial f}{\partial x_k} \right ) \frac{\partial f}{\partial x_k}
+\end{equation}
 %\begin{equation}
-%{\left \| {\frac{\partial f}{\partial x_k}} \right \|}_2 = 
-%\sqrt{{\frac{\partial f}{\partial x_k}}^{2}} = 
-%\sqrt{{ \left | {\frac{\partial f}{\partial x_k}} \right | }^{2}} = 
-%\left | {\frac{\partial f}{\partial x_k}} \right |
-%\end{equation}
-%\begin{equation}
+%\begin{split}
 %{\left \| \Delta f \right \|}_2 = 
-%\sqrt{{\frac{\partial f}{\partial x_1}}^{2} + \dots + {\frac{\partial f}{\partial x_k}}^{2}} = 
-%\sqrt{{\left | {\frac{\partial f}{\partial x_1}} \right | }^{2} + \dots + {\left | {\frac{\partial f}{\partial x_k}}\right | }^{2}} = 
+%\sqrt{{ \left [ \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + { \left [ \frac{\partial f}{\partial x_k} \right ] }^{2}} = \\
+%\sqrt{{\left [ \textrm{sgn} \left ( \frac{\partial f}{\partial x_1} \right ) \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + {\left [ \textrm{sgn} \left ( \frac{\partial f}{\partial x_k} \right ) \frac{\partial f}{\partial x_k} \right ] }^{2}} = 
 %{\left \| \textrm{abs}( \Delta f ) \right \|}_2
+%\end{split}
 %\end{equation}
+
+\begin{equation}
+\sqrt{{ \left [ \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + { \left [ \frac{\partial f}{\partial x_k} \right ] }^{2}} = 
+\sqrt{{\left [ \textrm{sgn} \left ( \frac{\partial f}{\partial x_1} \right ) \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + {\left [ \textrm{sgn} \left ( \frac{\partial f}{\partial x_k} \right ) \frac{\partial f}{\partial x_k} \right ] }^{2}}
+\end{equation}
 
 \end{itemize}
 
@@ -223,7 +231,7 @@ Mention lack of bias vector to preserve idempotency.
 
 \subsection{Constrained Recurrent Weights}
 
-One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can violently explode. If the recurrent matrix has a spectral radius greater than 1, a cycle of unbounded self amplification can quickly lead to numeric overflow. Fortunately this problem is avoidable by constraining the magnitude of recurrent weights to the range [-1, 1].
+One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can violently explode. If the recurrent matrix has a spectral radius greater than 1, a cycle of unbounded self amplification can quickly lead to numeric overflow. Fortunately this problem is avoidable by constraining the magnitude of recurrent weights to the range $\left [-1, 1 \right ]$.
 
 %footnote?
 Somewhat unexpectedly, it turns out that some tasks can be solved even if the recurrent weights are held constant at 1. However, it is more often the case that allowing the weights to change with learning leads to better models.
@@ -239,28 +247,32 @@ Appears to be critical to limit the size of the overall norm of the gradient, pa
 
 Critical to do a combination of both global and local norm clipping. Either alone is insufficient.
 
-\subsection{Efficient Real-Time Recurrent Learning Implementation}
+\subsection{Efficient Real-Time Recurrent Learning}
 
 %TODO: is it inefficient in number of operations, or just in memory size of params * hidden nodes?
-Real-time recurrent learning (RTRL) is a alternative approach to training RNNs \citep{RTRL}. Instead of building a deep computational graph extending back in time, all partial derivatives are maintained and carried forward with each timestep. It is not currently in use due to computational inefficiency as compared to backpropagation through time (BPTT). Modern RNNs are generally trained using BPTT. However, Diagnet's decoupled hidden layer eliminates any exchange of information between the hidden neurons, and a fortunate side-effect of that is that there exists a significantly more efficient RTRL implementation.
+Real-time recurrent learning (RTRL) is a online approach to training RNNs \citep{RTRL}. Instead of building a deep computational graph extending back into the past, all partial derivatives are updated and carried forward with each timestep. It is not currently in use due to computational inefficiency as compared to backpropagation through time (BPTT). Modern RNNs are generally trained using BPTT. 
+
+However, Diagnet's decoupled hidden layer eliminates the exchange of any information between hidden neurons, and a fortunate side-effect is that there exists a significantly more memory efficient RTRL implementation.
+
+\begin{equation}
+{\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_t := \textrm{sgn}\left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) x_{j_t} + r_j {\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_{t-1}
+\end{equation}
+
+\begin{equation}
+{\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_t := \textrm{sgn}\left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) f_{j_{t-1}} + r_j {\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_{t-1}
+\end{equation}
+
+RTRL for fully connected RNNs requires the storage of $n^3 + mn^2$ partial derivatives, whereas for Diagnet that requirement is reduced to $n^2 + mn$.
 
 TODO: prove this works.
 
 %TODO: cite this https://dl.acm.org/citation.cfm?id=1351135
 
-Mention advantages and also possibility of really efficient RTRL implementation.
-
-\begin{equation}
-{\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_t := \textrm{sgn} \left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) x_{j_t} + r_j {\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_{t-1}
-\end{equation}
-
-\begin{equation}
-{\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_t := \textrm{sgn} \left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) f_{j_{t-1}} + r_j {\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_{t-1}
-\end{equation}
-
-Big O analysis of this.
+Explain advantages.
 
 Make diagram for this?
+
+%TODO: should we call the "experiments" plural? Maybe should consider adding another task of some kind?
 
 \section{Experiments}
 \label{others}
