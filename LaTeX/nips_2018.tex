@@ -43,6 +43,8 @@ Morgan Weaver\\
 
 %TODO: cite Rumelhart?
 Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. They also incur a greater computational burden than their feedforward counterparts. Attempts to circumvent these problems have generally led in the direction of increasingly complex architectures and training methodologies. We propose Diagnet, a simple RNN model which consists of three core components: 1) an efficient diagonal hidden-to-hidden recurrent matrix, 2) an absolute value activation function, and 3) the application of constraints to the recurrent parameter weights and gradient norms during training. Despite the decoupled and simplistic nature of Diagnet's hidden units, it significantly outperforms Long Short-Term Memory on the 1k version of the bAbI text understanding tasks from Facebook Research. Diagnet acheives higher test set results than LSTM on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
+
+%TODO: mention efficient RTRL implementation in abstract?
   
 % and allows for the use of significantly more hidden neurons than standard fully-connected RNNs. 
 
@@ -237,14 +239,18 @@ Appears to be critical to limit the size of the overall norm of the gradient, pa
 
 Critical to do a combination of both global and local norm clipping. Either alone is insufficient.
 
-\subsection{Efficient RTRL implementation}
+\subsection{Efficient Real-Time Recurrent Learning Implementation}
+
+Real-time recurrent learning (RTRL) is a alternative approach to training RNNs \citep{RTRL}. It is not currently in use due to computational inefficiency as compared to backpropagation through time (BPTT). Modern RNNs are generally trained using BPTT. However, Diagnet's decoupled hidden layer eliminates any exchange of information between the hidden neurons, and as a consequence allows for a significantly more efficient RTRL implementation.
 
 TODO: prove this works.
+
+%TODO: cite this https://dl.acm.org/citation.cfm?id=1351135
 
 Mention advantages and also possibility of really efficient RTRL implementation.
 
 \begin{equation}
-{\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_t := \textrm{sgn} \left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r f_{j_{t-1}} \right) + r {\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_{t-1}
+{\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_t := \textrm{sgn} \left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r f_{j_{t-1}} \right) x_{j_t} + r {\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_{t-1}
 \end{equation}
 
 Big O analysis of this.
