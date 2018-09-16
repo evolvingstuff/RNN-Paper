@@ -161,24 +161,43 @@ The absolute value activation function has a few desirable properties:
 
 
 \begin{itemize}
-\item \textbf{Idempotent}: Assuming an absence of new input, and with self-recurrents connection of 1.0, long term, high precision storage of information is possible without any specialized architectural design.
+\item \textbf{Idempotent}: Assuming an absence of new input, and with self-recurrent connections of 1.0, long term, high precision storage of information is possible without any specialized architectural design.
 \begin{equation}
-\textrm{abs}(\textrm{abs}(\mathbf{x})) = \textrm{abs}(\mathbf{x})
+\textrm{abs}(\mathbf{x}) =
+\textrm{abs}(\textrm{abs}(\mathbf{x}))
 \end{equation}
-\item \textbf{Forward pass norm-preserving}: Element-wise application of the absolute value activation function preserves the length of its vector argument. This is true both element-wise, and for the vector as a whole.
+\item \textbf{Forward pass norm-preserving}: Application of the vectorized absolute value activation function preserves the length of its vector argument. This is true both element-wise, and for the vector as a whole.
 \begin{equation}
-{\left \| \mathbf{x} \right \|}_2 = \sqrt{{x_1}^{2} + {x_2}^{2} + \dots + {x_k}^2} = \sqrt{{|x_1|}^{2} + {|x_2|}^{2} + \dots + {|x_k|}^2}
+{\left \| x_k \right \|}_2 = 
+\sqrt{{x_k}^{2}} = 
+\sqrt{{ | x_k | }^{2}} = 
+| x_k |
+\end{equation}
+\begin{equation}
+{\left \| \mathbf{x} \right \|}_2 = 
+\sqrt{{x_1}^{2} + \dots + {x_k}^2} = 
+\sqrt{{|x_1|}^{2} + \dots + {|x_k|}^2} =
+{\left \| \textrm{abs}( \mathbf{x} ) \right \|}_2
 \end{equation}
 \item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors being passed backward through the computational graph enjoy the same norm-preserving benefits as the activation vectors in the forward direction.
-\end{itemize}
-%TODO: not totally sure about this one...
+
+
+\begin{equation}
+{\left \| {\frac{\partial f}{\partial x_k}} \right \|}_2 = 
+\sqrt{{\frac{\partial f}{\partial x_k}}^{2}} = 
+\sqrt{{ \left | {\frac{\partial f}{\partial x_k}} \right | }^{2}} = 
+\left | {\frac{\partial f}{\partial x_k}} \right |
+\end{equation}
 \begin{equation}
 {\left \| \Delta f \right \|}_2 = 
-\sqrt{{\frac{\partial f}{\partial x_1}}^{2} + {\frac{\partial f}{\partial x_2}}^{2} + \dots + {\frac{\partial f}{\partial x_k}}^{2}} = 
-\sqrt{ {\left[{\frac{x_1}{|x_1|}}\right]}^{2} + {\left[{\frac{x_2}{|x_2|}}\right]}^{2} + \dots + {\left[{\frac{x_k}{|x_k|}}\right]}^{2}}
+\sqrt{{\frac{\partial f}{\partial x_1}}^{2} + \dots + {\frac{\partial f}{\partial x_k}}^{2}} = 
+\sqrt{{\left | {\frac{\partial f}{\partial x_1}} \right | }^{2} + \dots + {\left | {\frac{\partial f}{\partial x_k}}\right | }^{2}} = 
+{\left \| \textrm{abs}( \Delta f ) \right \|}_2
 \end{equation}
 
-These last two properties ensure that the absolute value activation function cannot, by itself, cause activations or gradients to explode or vanish.
+\end{itemize}
+
+These norm-preserving properties ensure that the absolute value activation function cannot, by itself, cause activations or gradients to explode or vanish.
 
 Generic restatements about why norm preservation is important when training recurrent neural networks.
 
@@ -197,6 +216,8 @@ We speculate that it has not received much attention as of yet, because very spe
 \subsection{Diagonal Recurrent Matrix}
 
 Talk about the computational advantages, as well as suggesting why this might produce a good prior for generalization.
+
+Hadamard Product.
 
 Sparseness appears to help with generalization on NLP tasks, as shown in \citet{2018arXiv180808720D}, where the use of block diagonal matrices greatly reduces the parameter count, while actually boosting test set performance.
 
