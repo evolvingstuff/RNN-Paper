@@ -114,7 +114,7 @@ Densely connected from hidden layer to output
 
 \begin{figure}[h]
   \centering
-  \includestandalone[scale=0.5]{figures/diagnet1}
+  \includestandalone[scale=1.0]{figures/diagnet1}
   \caption{Diagnet structural diagram.}
 \end{figure}
 
@@ -128,7 +128,7 @@ Mention the lack of a bias vector here?
 
 \subsection{Absolute Value Activation Function}
 
-The absolute value activation function has a few desirable properties: 
+The absolute value activation function has a number of desirable properties: 
 
 \begin{equation}
 |x| =
@@ -161,7 +161,7 @@ The absolute value activation function has a few desirable properties:
 
 
 \begin{itemize}
-\item \textbf{Idempotent}: Assuming an absence of new input, and with self-recurrent connections of 1.0, long term, high precision storage of information is possible without any specialized architectural design.
+\item \textbf{Idempotent}: In the absence of new input, and with self-recurrent connections of 1.0, long term, high precision storage of information is possible without any specialized architectural design.
 \begin{equation}
 \textrm{abs}(\mathbf{x}) =
 \textrm{abs}(\textrm{abs}(\mathbf{x}))
@@ -182,18 +182,18 @@ The absolute value activation function has a few desirable properties:
 \item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors being passed backward through the computational graph enjoy the same norm-preserving benefits as the activation vectors in the forward direction.
 
 
-\begin{equation}
-{\left \| {\frac{\partial f}{\partial x_k}} \right \|}_2 = 
-\sqrt{{\frac{\partial f}{\partial x_k}}^{2}} = 
-\sqrt{{ \left | {\frac{\partial f}{\partial x_k}} \right | }^{2}} = 
-\left | {\frac{\partial f}{\partial x_k}} \right |
-\end{equation}
-\begin{equation}
-{\left \| \Delta f \right \|}_2 = 
-\sqrt{{\frac{\partial f}{\partial x_1}}^{2} + \dots + {\frac{\partial f}{\partial x_k}}^{2}} = 
-\sqrt{{\left | {\frac{\partial f}{\partial x_1}} \right | }^{2} + \dots + {\left | {\frac{\partial f}{\partial x_k}}\right | }^{2}} = 
-{\left \| \textrm{abs}( \Delta f ) \right \|}_2
-\end{equation}
+%\begin{equation}
+%{\left \| {\frac{\partial f}{\partial x_k}} \right \|}_2 = 
+%\sqrt{{\frac{\partial f}{\partial x_k}}^{2}} = 
+%\sqrt{{ \left | {\frac{\partial f}{\partial x_k}} \right | }^{2}} = 
+%\left | {\frac{\partial f}{\partial x_k}} \right |
+%\end{equation}
+%\begin{equation}
+%{\left \| \Delta f \right \|}_2 = 
+%\sqrt{{\frac{\partial f}{\partial x_1}}^{2} + \dots + {\frac{\partial f}{\partial x_k}}^{2}} = 
+%\sqrt{{\left | {\frac{\partial f}{\partial x_1}} \right | }^{2} + \dots + {\left | {\frac{\partial f}{\partial x_k}}\right | }^{2}} = 
+%{\left \| \textrm{abs}( \Delta f ) \right \|}_2
+%\end{equation}
 
 \end{itemize}
 
@@ -229,16 +229,18 @@ Maybe mention something about possibility for much more efficient version of RTR
 
 %Mention that while not strictly necessary, it appears to help performance.
 
+Number of operations scales linearly with hidden layer size.
+
 \subsection{Single Hidden Layer}
 
 Mention advantages and also possibility of really efficient RTRL implementation.
 
 \subsection{Constrained Recurrent Weights}
 
-One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can and will violently explode. Fortunately this problem can be avoided by constraining the magnitude of recurrent weights the range of [-1, 1]. This can be interpreted as a very simplistic way of limiting the spectral radius of the recurrent matrix.
+One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can violently explode. Fortunately this problem is avoidable by constraining the magnitude of recurrent weights the range [-1, 1]. This can be interpreted as a very simplistic way of limiting spectral radius.
 
 %footnote?
-Somewhat unexpectedly, it turns out that some tasks can be solved even if the recurrent weights are set to a fixed values of 1.0. However, it is more often the case that leaving the weights plastic leads to better training outcomes.
+Somewhat unexpectedly, it turns out that some tasks can be solved even if the recurrent weights are set to fixed values of 1. However, it is more often the case that allowing the weights to change with learning leads to better models.
 
 %In fact (double check) because of the constrained structure, these “recurrent factors” can straightforwardly tell us the singular values, eigenvalues, spectral radius of the linear transformation. (I think the fact that we use no biases helps because it remains linear rather than affine.)
 
