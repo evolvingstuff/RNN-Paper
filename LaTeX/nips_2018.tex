@@ -1,3 +1,4 @@
+%\documentclass[fleqn]{article} %aligns equations
 \documentclass{article}
 \renewcommand{\theequation}{\arabic{equation}}
 
@@ -24,7 +25,7 @@
 \usepackage{microtype}      % microtypography
 \usepackage{tikz}
 \usepackage{standalone}
-%\usepackage{amsmath}
+\usepackage{amsmath}
 
 %\setcitestyle{numbers}
 
@@ -173,6 +174,7 @@ The absolute value activation function has a number of desirable properties:
 \right.
 \end{equation}
 
+
 \begin{equation}
 \textrm{abs}(\mathbf{x}) = \left \langle |x_1|, |x_2|, \dots , |x_k| \right \rangle
 \end{equation}
@@ -188,10 +190,9 @@ The absolute value activation function has a number of desirable properties:
 \end{equation}
 \item \textbf{Forward pass norm-preserving}: Application of the vectorized absolute value activation function preserves the length of its vector argument. This is true both element-wise, and for the vector as a whole.
 \begin{equation}
-{\left \| x_k \right \|}_2 = 
-\sqrt{{x_k}^{2}} = 
-\sqrt{{ | x_k | }^{2}} = 
-| x_k |
+\sqrt{{x_i}^{2}} = 
+\sqrt{{ | x_i | }^{2}} = 
+| x_i |
 \end{equation}
 \begin{equation}
 {\left \| \mathbf{x} \right \|}_2 = 
@@ -201,29 +202,19 @@ The absolute value activation function has a number of desirable properties:
 \end{equation}
 \item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors being passed backward through the computational graph enjoy the same norm-preserving benefits as the activation vectors in the forward direction.
 
-\begin{equation}
-{\left \| {\frac{\partial f}{\partial x_k}} \right \|}_2 = 
-\sqrt{{ \left [ \frac{\partial f}{\partial x_k} \right ] }^{2}} = 
-\sqrt{{ \left [ \textrm{sgn} \left ( \frac{\partial f}{\partial x_k} \right ) \frac{\partial f}{\partial x_k} \right ] }^{2}} = 
-\textrm{sgn} \left ( \frac{\partial f}{\partial x_k} \right ) \frac{\partial f}{\partial x_k}
-\end{equation}
 %\begin{equation}
-%\begin{split}
-%{\left \| \Delta f \right \|}_2 = 
-%\sqrt{{ \left [ \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + { \left [ \frac{\partial f}{\partial x_k} \right ] }^{2}} = \\
-%\sqrt{{\left [ \textrm{sgn} \left ( \frac{\partial f}{\partial x_1} \right ) \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + {\left [ \textrm{sgn} \left ( \frac{\partial f}{\partial x_k} \right ) \frac{\partial f}{\partial x_k} \right ] }^{2}} = 
-%{\left \| \textrm{abs}( \Delta f ) \right \|}_2
-%\end{split}
+%\sqrt{{ \left [ \frac{\partial f}{\partial x_i} \right ] }^{2}} = 
+%\sqrt{{ \left [ \textrm{sgn} \left ( x_i \right ) \frac{\partial f}{\partial x_i} \right ] }^{2}}
 %\end{equation}
 
 \begin{equation}
 \sqrt{{ \left [ \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + { \left [ \frac{\partial f}{\partial x_k} \right ] }^{2}} = 
-\sqrt{{\left [ \textrm{sgn} \left ( \frac{\partial f}{\partial x_1} \right ) \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + {\left [ \textrm{sgn} \left ( \frac{\partial f}{\partial x_k} \right ) \frac{\partial f}{\partial x_k} \right ] }^{2}}
+\sqrt{{\left [ \textrm{sgn} \left ( x_1 \right ) \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + {\left [ \textrm{sgn} \left ( x_k \right ) \frac{\partial f}{\partial x_k} \right ] }^{2}}
 \end{equation}
 
 \end{itemize}
 
-These norm-preserving properties ensure that the absolute value activation function cannot, by itself, cause activations or gradients to explode or vanish.
+These norm-preserving properties ensure that the absolute value activation function cannot be a source of exploding or vanishing gradients.
 
 Mention lack of bias vector to preserve idempotency.
 
