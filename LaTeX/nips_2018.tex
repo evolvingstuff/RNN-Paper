@@ -118,15 +118,21 @@ Densely connected from hidden layer to output
   \caption{Diagnet structural diagram.}
 \end{figure}
 
-\begin{equation}
-  \mathbf{h}_t := | \mathbf{u} \circ \mathbf{h}_{t-1} + \mathbf{Vx}_t |
-\end{equation}
+%\begin{equation}
+%  \mathbf{h}_t := \textrm{abs}( \mathbf{u} \circ \mathbf{h}_{t-1} + \mathbf{Vx}_t )
+%\end{equation}
 
-Note that this notation represents the absolute value function applied element-wise to the vector.
+%Note that abs() is a vectorized function, applied element-wise to each compontent of its argument.
+
+Mention the lack of a bias vector here?
 
 \subsection{Absolute Value Activation Function}
 
+We will use abs() to represent the vectorized version of the absolute value function:
 
+\begin{equation}
+\textrm{abs}(\mathbf{x}) = \left \langle |x_1|, |x_2|, \dots , |x_k| \right \rangle
+\end{equation}
 
 An absolute value activation function in the recurrent hidden layer has been chosen due to some of its desirable properties:
 
@@ -154,11 +160,15 @@ An absolute value activation function in the recurrent hidden layer has been cho
  
 
 \begin{itemize}
-%\item \textbf{Non-saturating}: Completely prevents loss of sensitivity to small changes of input which can occur, for example, in sigmoidal functions, or in ReLU for negative inputs.
-%TODO: this analogy is fuzzy and needs to be tightened, because it doesn't mention the need for absence of new input
-\item \textbf{Idempotent}: Assuming an absence of new input, and with a self-recurrent connection of 1.0, long term, high precision storage of information is possible without any specialized architectural design.
+\item \textbf{Idempotent}: Assuming an absence of new input, and with self-recurrents connection of 1.0, long term, high precision storage of information is possible without any specialized architectural design.
+\begin{equation}
+\textrm{abs}(\textrm{abs}(\mathbf{x})) = \textrm{abs}(\mathbf{x})
+\end{equation}
 \item \textbf{Forward pass norm-preserving}: Element-wise application of the absolute value activation function preserves the length of its vector argument. This is true both element-wise, and for the vector as a whole.
-\item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors being passed back through the computational graph enjoy the same benefits as the activation vectors in the forward direction.
+\begin{equation}
+{\left \| \mathbf{x} \right \|}_2 = \sqrt{{x_1}^{2} + {x_2}^{2} + \dots + {x_k}^2} = \sqrt{{|x_1|}^{2} + {|x_2|}^{2} + \dots + {|x_k|}^2}
+\end{equation}
+\item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors being passed backward through the computational graph enjoy the same norm-preserving benefits as the activation vectors in the forward direction.
 \end{itemize}
 
 These last two properties ensure that the absolute value activation function cannot, by itself, cause activations or gradients to explode or vanish.
@@ -190,6 +200,10 @@ Maybe mention something about possibility for much more efficient version of RTR
 %\subsection{No Recurrent Bias}
 
 %Mention that while not strictly necessary, it appears to help performance.
+
+\subsection{Single Hidden Layer}
+
+Mention advantages and also possibility of really efficient RTRL implementation.
 
 \subsection{Constrained Recurrent Weights}
 
@@ -255,22 +269,8 @@ Maybe make a table of these things for all the experiments? That would be pleasa
 
 bAbI is a set of 20 synthetic text understanding tasks created by \citet{2015arXiv150205698W} at Facebook Research. Each task has been designed to probe language models for particular logical and reasoning capabilities, such as induction, deduction, chaining of facts, temporal ordering of events, as well as others. It is suggested that solving these "toy" problems is a necessary (although not sufficient) precondition to the development of truly intelligentfa systems.
 
-Add a footnote with link to bAbI.
-
-In the paper, it was shown that a basic LSTM network was unable to solve any of the 20 tasks, where success had been defined as attaining an accuracy of 95\% or more.
-
-The initial, significant improvement over a plain RNN baseline was in the form of MemNNs, previously introduced in [REF]. And since then a number of new techniques have been successfully applied to bAbI, generally falling into two overall domains: augmented memories, and attentional mechanisms.
-
-Augmented memories are a family of approaches that involve fitting a neural network (generally a recurrent one) with an "external" - and differently structured - form of memory. These external memory stores are generally more inspired by computer science than biology, and include concepts such as content addressable memory, random access memory, stacks, queues, Turing tapes, cellular automata, etc.. Almost all external memories make use of fully differentiable read and write mechanisms, although there are a few notable exceptions that are discrete in nature; requiring reinforcement learning rather than pure backpropagation in order to train.
-
-The other significant family of approaches involve attentional mechanisms. Attentional mechanisms have met with great recent success, particularly in the domain of machine translation. Rather than having the neural network improve its ability to store information initially, attentional mechanisms all the model to go back over the sequential history of its inputs, often multiple times, conditioned on the type of output that is expected. In the case of machine translation, that conditioning will be driven by the next word in the sentence it is translating combined with what it has already produced. In the case of natural language understanding, it is the question being asked that conditions the attention to the relevant subset of facts in the preceding material. In essence, attention allows models to selectively reread do further processing on what has already been seen.
-
-Diagnet does none of this, yet. But future experiments will undoubtedly involve memory enhancing alterations, with Diagnet as the core "controller" of the architecture. 
-
-
-
 %TODO: how to make sure this table appears after the subsection?
-\begin{table}
+\begin{table}[h]
 \caption{Example from bAbI problem set}
 \centering
 \begin{tabular}{|l|l|l|}
@@ -296,15 +296,29 @@ John moved to the bedroom. & & \\
 \end{tabular}
 \end{table}
 
+Add a footnote with link to bAbI.
+
+In the paper, it was shown that a basic LSTM network was unable to solve any of the 20 tasks, where success had been defined as attaining an accuracy of 95\% or more.
+
+The initial, significant improvement over a plain RNN baseline was in the form of MemNNs, previously introduced in [REF]. And since then a number of new techniques have been successfully applied to bAbI, generally falling into two overall domains: augmented memories, and attentional mechanisms.
+
+Augmented memories are a family of approaches that involve fitting a neural network (generally a recurrent one) with an "external" - and differently structured - form of memory. These external memory stores are generally more inspired by computer science than biology, and include concepts such as content addressable memory, random access memory, stacks, queues, Turing tapes, cellular automata, etc.. Almost all external memories make use of fully differentiable read and write mechanisms, although there are a few notable exceptions that are discrete in nature; requiring reinforcement learning rather than pure backpropagation in order to train.
+
+The other significant family of approaches involve attentional mechanisms. Attentional mechanisms have met with great recent success, particularly in the domain of machine translation. Rather than having the neural network improve its ability to store information initially, attentional mechanisms all the model to go back over the sequential history of its inputs, often multiple times, conditioned on the type of output that is expected. In the case of machine translation, that conditioning will be driven by the next word in the sentence it is translating combined with what it has already produced. In the case of natural language understanding, it is the question being asked that conditions the attention to the relevant subset of facts in the preceding material. In essence, attention allows models to selectively reread do further processing on what has already been seen.
+
+Diagnet does none of this, yet. But future experiments will undoubtedly involve memory enhancing alterations, with Diagnet as the core "controller" of the architecture. 
+
+
+
+
+
 In the accompanying paper, Weston et al introduce Memory Networks in order to overcome many of the shortcomings of LSTM. 
 
 Additionally, it has been found that adding attentional mechanisms to input history has resulted in significantly improved performance.
 
 ADD MORE STUFF ABOUT THAT HERE
 
-Note that in this work we are not comparing Diagnet directly to any of the aforementioned “augmented” neural architectures. Instead, we demonstrate that Diagnet significantly outperforms LSTM on many of these 20 tasks, even despite using a much simpler and computationally efficient internal architecture.
-
-\begin{table}
+\begin{table}[h]
 
 \centering
 \caption{bAbI test set accuracies}
@@ -337,6 +351,10 @@ Agent's Motivations & 91 & \textbf{96.3} & +5.3 \\
 \end{tabular}
 
 \end{table}
+
+Note that in this work we are not comparing Diagnet directly to any of the aforementioned “augmented” neural architectures. Instead, we demonstrate that Diagnet significantly outperforms LSTM on many of these 20 tasks, even despite using a much simpler and computationally efficient internal architecture.
+
+
 
 Mention that on some tasks, it often ends up using very different “signatures” of recurrent factor values.
 
@@ -410,6 +428,8 @@ Gradient clipping--2 uses here--1)take norm of gradient over all params and limi
 \subsection{Future Work}
 Diagnet's architecture suggests many avenues for additional tasks and performance-enhancing modifications.  Its segregated unit design is ideal for parallelization, and we have yet to tap its potential for GPU operations.  Another intuitive addition would be to include an attentional mechanism or memory augmentation, which we leave to future publications.  
 As RNNs have historically been utilized with great success in NLP tasks, we intend to continue exploring Diagnet's capabilities in this problem space.  Another area in which complex long-range sequences are of great interest is computational genomics. The roughly 1.5-gigabytes of information in the human genome may benefit from an RNN architecture supporting wider hidden layers.  
+
+Mention attempting to increase depth of network, but without losing scalability.
 
 \section{Conclusion}
 Here we outline the features, mechanisms, and benchmarking performance of Diagnet. Results were robust over a variety of tasks, most notably in bAbI question-answering tasks, where Diagnet’s accuracy scores showed up to 40\% percent improvement over Long Short-Term Memory.  While memory augmentation and attentional mechanisms offer clear advantages as architectural additions, we choose to focus on the core RNN functionality in this paper.  Future work may incorporate attentional mechanisms, memory augmentation, and additional task spaces such as semantic embeddings, genetic sequencing, and computer vision.  Diagnet’s novel architecture offers great flexibility in hidden layering, and number of steps in various memory tasks, as well as potential for distributed computing.  Due to the fact that Diagnet does not have gating mechanisms in its current iteration, it is largely input-driven, and tends to perform best in tasks where an output sequence is expected after arbitrary delays. The work presented here represents a first glance at Diagnet’s mechanisms and potential, which the authors hope to expand in future work. 
