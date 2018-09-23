@@ -312,7 +312,7 @@ The first notable improvement as compared to a vanilla RNN was in the form of Me
 
 %The other significant family of approaches involve attentional mechanisms. Attentional mechanisms have met with great recent success, particularly in the domain of machine translation. Rather than having the neural network improve its ability to store information initially, attentional mechanisms all the model to go back over the sequential history of its inputs, often multiple times, conditioned on the type of output that is expected. In the case of machine translation, that conditioning will be driven by the next word in the sentence it is translating combined with what it has already produced. In the case of natural language understanding, it is the question being asked that conditions the attention to the relevant subset of facts in the preceding material. In essence, attention allows models to selectively reread do further processing on what has already been seen.
 \subsection{Results}
-Here we present Diagnet's results on the 20 babI question answering tasks.  Note that two sets of LSTM results are provided: the first, as reported in Weston et al. against bAbI v1.0, and the second, being a standard LSTM tested against bAbI v1.2.  The latter is a reflection of the correction of errors found in the original task set[REF].
+Here we present Diagnet's results on the 20 babI question answering tasks.  Note that two sets of LSTM results are provided: the first, as reported in Weston et al. against bAbI v1.0, and the second, being a standard LSTM we tested against bAbI v1.2.  The latter is a reflection of the correction of errors found in the original task set[REF].
 
 \begin{table}[h]
 
@@ -367,7 +367,7 @@ Note that we are not comparing Diagnet directly to any of the aforementioned “
 %It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  
 %Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982.  Subsequently, Schmidhuber \citet{6795261} developed the Neural History Compressor and was able to preserve information over time steps, while compressing information.  
 
-In 1991 Fallman developed the Recurrent Cascade Correlation Algorithm \citet{Fahlman1990TheRC}, in which a single, previously trained hidden unit is added to the network at a time, with incoming weights frozen as the incoming unit is connected in a feed-forward manner with the previous input and hidden units. Each new hidden neuron must be maximally correlated with current remaining error per step.  
+In 1991 Fallman developed the Recurrent Cascade Correlation Algorithm \citet{Fahlman1990TheRC}, in which one single, previously trained hidden unit is added to the network at a time, with incoming weights frozen as the incoming unit is connected in a feed-forward manner with the previous input and hidden units. Each new hidden neuron must be maximally correlated with current remaining error per step.  
 Which used saturated functions as opposed to the non-saturating absolute value function.  At that point in time, the design was not feasible for certain tasks like sequential parity.  proved not useful for certain grammars like seq parity (using saturating, not absolute value function). This is the first occurrence we are aware of in the research in which a model contains self-connected neurons.
 %Truncated backprop at the time bc feasible. 
 
