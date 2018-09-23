@@ -311,52 +311,46 @@ The first notable improvement as compared to a vanilla RNN was in the form of Me
 %Augmented memories are a family of approaches that involve fitting a neural network (generally a recurrent one) with an "external" - and differently structured - form of memory. These external memory stores are generally more inspired by computer science than biology, and include concepts such as content addressable memory, random access memory, stacks, queues, Turing tapes, cellular automata, etc.. Almost all external memories make use of fully differentiable read and write mechanisms, although there are a few notable exceptions that are discrete in nature; requiring reinforcement learning rather than pure backpropagation in order to train.
 
 %The other significant family of approaches involve attentional mechanisms. Attentional mechanisms have met with great recent success, particularly in the domain of machine translation. Rather than having the neural network improve its ability to store information initially, attentional mechanisms all the model to go back over the sequential history of its inputs, often multiple times, conditioned on the type of output that is expected. In the case of machine translation, that conditioning will be driven by the next word in the sentence it is translating combined with what it has already produced. In the case of natural language understanding, it is the question being asked that conditions the attention to the relevant subset of facts in the preceding material. In essence, attention allows models to selectively reread do further processing on what has already been seen.
-
+ \subsection {Results}
+ Here we present Diagnet's results on the 20 babI question answering tasks.  Note that two sets of LSTM results are provided: the first, as reported in Weston et al. against bAbI v1.0, and the second, being a standard LSTM tested against bAbI v1.2.  The latter is a reflection of the correction of errors found in the original task set[REF_SMERITY].
 \begin{table}[h]
 
 \centering
 \caption{bAbI test set accuracies}
-\begin{tabular}{|l|r|r|r|}
+\begin{tabular}{|l|r|r|r|r|}
 \hline
-Task & LSTM & Diagnet & +/- \\
+Task & LSTM 1 & LSTM 2 & Diagnet & +/- \\
 \hline
-Single Supporting Fact & 50 & \textbf{72.1} & +22.1 \\
-Two Supporting Facts & 20 & \textbf{31.8} & +11.8 \\
-Three Supporting Facts & 20 & \textbf{32.4} & +12.4 \\
-Two Arg. Relations & 61 & \textbf{98.9} & +37.9 \\
-Three Arg. Relations & 70 & \textbf{82.4} & +12.4 \\
-Yes/No Questions & 48 & \textbf{72.4} & +24.4 \\
-Counting & 49 & \textbf{82.1} & +33.1 \\
-Lists/Sets & 45 & \textbf{75.1} & +30.1 \\
-Simple Negation & 64 & \textbf{77}.0 & +13.0 \\
-Indefinite Knowledge & 44 & \textbf{66.8} & +22.8 \\
-Basic Coreference & 72 & \textbf{81.3} & +9.3 \\
-Conjunction & 74 & \textbf{90.4} & +6.4 \\
-Compound Coreference & 94 & \textbf{94.2} & +0.2 \\
-Time Reasoning & 27 & \textbf{39.6} & +12.6 \\
-Basic Deduction & 21 & \textbf{49.1} & +28.1 \\
-Basic Induction & 23 & \textbf{46.5} & +23.5 \\
-Positional Reasoning & \textbf{51} & 50.1 & -0.9 \\
-Size Reasoning & 52 & \textbf{92.0} & +40.0 \\
-Path Finding & 8 & \textbf{12.4} & +4.4 \\
-Agent's Motivations & 91 & \textbf{96.3} & +5.3 \\
+Single Supporting Fact & 50 &  & \textbf{72.1} & +22.1 \\
+Two Supporting Facts & 20 &  &\textbf{31.8} & +11.8 \\
+Three Supporting Facts & 20 &  & \textbf{32.4} & +12.4 \\
+Two Arg. Relations & 61 &  & \textbf{98.9} & +37.9 \\
+Three Arg. Relations & 70 & & \textbf{82.4} & +12.4 \\
+Yes/No Questions & 48 & & \textbf{72.4} & +24.4 \\
+Counting & 49 &  & \textbf{82.1} & +33.1 \\
+Lists/Sets & 45 & & \textbf{75.1} & +30.1 \\
+Simple Negation & 64 &  &\textbf{77}.0 & +13.0 \\
+Indefinite Knowledge & 44 & & \textbf{66.8} & +22.8 \\
+Basic Coreference & 72 &  & \textbf{81.3} & +9.3 \\
+Conjunction & 74 &  & \textbf{90.4} & +6.4 \\
+Compound Coreference & 94 &  & \textbf{94.2} & +0.2 \\
+Time Reasoning & 27 &  & \textbf{39.6} & +12.6 \\
+Basic Deduction & 21 &  & \textbf{49.1} & +28.1 \\
+Basic Induction & 23 &  & \textbf{46.5} & +23.5 \\
+Positional Reasoning &  \textbf{51} &  & 50.1 & -0.9 \\
+Size Reasoning & 52 &  & \textbf{92.0} & +40.0 \\
+Path Finding & 8 &  & \textbf{12.4} & +4.4 \\
+Agent's Motivations & 91 &  & \textbf{96.3} & +5.3 \\
 \hline
 
 \end{tabular}
 
 \end{table}
 
-Note that in this work we are not comparing Diagnet directly to any of the aforementioned “augmented” neural architectures. Instead, we demonstrate that Diagnet significantly outperforms LSTM on many of these 20 tasks, even despite using a much simpler and computationally efficient internal architecture.
+As far as we are aware, these are the strongest results to date using a vanilla neural architecture on the weakly supervised version (with 1000 training items per task) of the bAbI tasks.
 
-
-
-Mention that on some tasks, it often ends up using very different “signatures” of recurrent factor values.
-
-As far as we are aware, these are the strongest results to date using a “plain” neural neural architecture on the 1k, weakly supervised version of the bAbI tasks.
-
-This suggests that Diagnet may represent 
-
-%TODO: should we move this to before or AFTER the experimental results, just as in the QRNN paper?
+Note that we are not comparing Diagnet directly to any of the aforementioned “augmented” neural architectures. Instead, we demonstrate that Diagnet significantly outperforms LSTM on many of these 20 tasks, despite using a much simpler and computationally efficient internal architecture.
+%Mention that on some tasks, it often ends up using very different “signatures” of recurrent factor values.
 
 \section{Related Work}
 \label{gen_inst}
