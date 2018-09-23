@@ -44,7 +44,7 @@ Morgan Weaver\\
 \begin{abstract}
 
 %TODO: cite Rumelhart?
-Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. They also incur a greater computational burden than their feedforward counterparts. Attempts to circumvent these problems have generally led in the direction of increasingly complex architectures and training methodologies. We propose Diagnet, a simple RNN model which consists of three core components: 1) a diagonal hidden-to-hidden recurrent matrix, 2) an absolute value activation function, and 3) the application of constraints to the recurrent parameter weights and gradient norms during training. Despite the decoupled and simplistic nature of Diagnet's hidden units, it significantly outperforms Long Short-Term Memory on the 1k version of the bAbI text understanding tasks from Facebook Research. Diagnet acheives higher test set results than LSTM on 19 out of the 20 tasks, by margins of up to 40\% accuracy. We also introduce an efficient version of real-time recurrent learning for Diagnet that reduces the partial derivative storage requirements from $n^3 + mn^2$ to $n(m + 1)$, eliminating the need to store an unrolled computational graph of prior activations, thus making it an appealing alternative to back-propagation through time.
+Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. They also incur a greater computational burden than their feedforward counterparts. Attempts to circumvent these problems have generally led in the direction of increasingly complex architectures and training methodologies. We propose Diagnet, a simple RNN model which consists of three core components: 1) an efficient diagonal hidden-to-hidden recurrent matrix, 2) an absolute value activation function, and 3) the application of constraints to the recurrent parameter weights and gradient norms during training. Despite the decoupled and simplistic nature of Diagnet's hidden units, it significantly outperforms Long Short-Term Memory on the 1k version of the bAbI text understanding tasks from Facebook Research. Diagnet acheives higher test set results than LSTM on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
 
 %TODO: mention efficient RTRL implementation in abstract?
   
@@ -225,9 +225,10 @@ Mention lack of bias vector to preserve idempotency.
 One significant danger in the use of the absolute value activation function is that, without special care and caution, the magnitude of the hidden state can violently explode. If the recurrent matrix has a spectral radius greater than 1, a cycle of unbounded self amplification can quickly lead to numeric overflow. Fortunately this problem is avoidable by constraining the magnitude of recurrent weights to the range $\left [-1, 1 \right ]$.
 
 %footnote?
-Somewhat unexpectedly, it turns out that some tasks can be solved even if the recurrent weights are held constant at 1, or even randomly selected values in the range $\left [-1, 1 \right ]$. However, it is more often the case that allowing the weights to be tuned by learning leads to better generalizing models.
+Somewhat unexpectedly, it turns out that some tasks can be solved even if the recurrent weights are held constant at 1. However, it is more often the case that allowing the weights to change with learning leads to better models.
 
 %In fact (double check) because of the constrained structure, these “recurrent factors” can straightforwardly tell us the singular values, eigenvalues, spectral radius of the linear transformation. (I think the fact that we use no biases helps because it remains linear rather than affine.)
+
 
 \subsection{Two Complementary Forms of Gradient Clipping}
 
@@ -240,7 +241,7 @@ Critical to do a combination of both global and local norm clipping. Either alon
 \subsection{Efficient Real-Time Recurrent Learning}
 
 %TODO: is it inefficient in number of operations, or just in memory size of params * hidden nodes?
-Real-time recurrent learning (RTRL) is a online approach to training RNNs \citep{RTRL}. Instead of building a deep computational graph extending back into the past, all partial derivatives are updated and carried forward with each timestep. RTRL is not currently in use due to computational inefficiency as compared to back-propagation through time (BPTT). Consequently, modern RNNs are generally trained using full or truncated versions of BPTT. 
+Real-time recurrent learning (RTRL) is a online approach to training RNNs \citep{RTRL}. Instead of building a deep computational graph extending back into the past, all partial derivatives are updated and carried forward with each timestep. It is not currently in use due to computational inefficiency as compared to backpropagation through time (BPTT). Modern RNNs are generally trained using BPTT. 
 
 However, Diagnet's decoupled hidden layer eliminates the exchange of any information between hidden neurons, and a fortunate side-effect is that there exists a significantly more memory efficient RTRL implementation.
 
@@ -252,7 +253,9 @@ However, Diagnet's decoupled hidden layer eliminates the exchange of any informa
 {\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_t := \textrm{sgn}\left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) f_{j_{t-1}} + r_j {\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_{t-1}
 \end{equation}
 
-RTRL for fully connected RNNs requires the storage of $n^3 + mn^2$ partial derivatives, whereas for Diagnet that requirement is reduced to $n (m + 1)$.
+RTRL for fully connected RNNs requires the storage of $n^3 + mn^2$ partial derivatives, whereas for Diagnet that requirement is reduced to $n^2 + mn$.
+
+TODO: prove this works.
 
 %TODO: cite this https://dl.acm.org/citation.cfm?id=1351135
 
@@ -297,6 +300,7 @@ Derivative clipping
 Weight initialization scheme
 *Try with mini-batches
 Hidden layer sizes
+Poor-man’s gate sizes
 
 No biases in hidden layer.
 
@@ -339,11 +343,15 @@ In the paper, it was shown that a basic LSTM network was unable to solve any of 
 
 The initial, significant improvement over a plain RNN baseline was in the form of MemNNs, previously introduced in [REF]. And since then a number of new techniques have been successfully applied to bAbI, generally falling into two overall domains: augmented memories, and attentional mechanisms.
 
-Augmented memories are a family of approaches that involve fitting a neural network (generally a recurrent one) with an "external" - and differently structured - form of memory. These external memory stores are generally more inspired by computer science than biology, and include concepts such as content addressable memory, random access memory, stacks, queues, Turing tapes, cellular automata, etc.. Almost all external memories make use of fully differentiable read and write mechanisms, although there are a few notable exceptions that are discrete in nature; requiring reinforcement learning rather than pure back-propagation in order to train.
+Augmented memories are a family of approaches that involve fitting a neural network (generally a recurrent one) with an "external" - and differently structured - form of memory. These external memory stores are generally more inspired by computer science than biology, and include concepts such as content addressable memory, random access memory, stacks, queues, Turing tapes, cellular automata, etc.. Almost all external memories make use of fully differentiable read and write mechanisms, although there are a few notable exceptions that are discrete in nature; requiring reinforcement learning rather than pure backpropagation in order to train.
 
 The other significant family of approaches involve attentional mechanisms. Attentional mechanisms have met with great recent success, particularly in the domain of machine translation. Rather than having the neural network improve its ability to store information initially, attentional mechanisms all the model to go back over the sequential history of its inputs, often multiple times, conditioned on the type of output that is expected. In the case of machine translation, that conditioning will be driven by the next word in the sentence it is translating combined with what it has already produced. In the case of natural language understanding, it is the question being asked that conditions the attention to the relevant subset of facts in the preceding material. In essence, attention allows models to selectively reread do further processing on what has already been seen.
 
 Diagnet does none of this, yet. But future experiments will undoubtedly involve memory enhancing alterations, with Diagnet as the core "controller" of the architecture. 
+
+
+
+
 
 In the accompanying paper, Weston et al introduce Memory Networks in order to overcome many of the shortcomings of LSTM. 
 
@@ -406,7 +414,10 @@ This suggests that Diagnet may represent
 %Diagonal hidden state
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-%\textbf{Diagonal hidden state}  
+%\textbf{Diagonal hidden state}
+
+%It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  
+%Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982.  Subsequently, Schmidhuber \citet{6795261} developed the Neural History Compressor and was able to preserve information over time steps, while compressing information.  
 
 In 1991 Fallman developed the Recurrent Cascade Correlation Algorithm \citet{Fahlman1990TheRC}, in which a single, previously trained hidden unit is added to the network at a time, with incoming weights frozen as the incoming unit is connected in a feed-forward manner with the previous input and hidden units. Each new hidden neuron must be maximally correlated with current remaining error per step.  
 Which used saturated functions as opposed to the non-saturating absolute value function.  At that point in time, the design was not feasible for certain tasks like sequential parity.  proved not useful for certain grammars like seq parity (using saturating, not absolute value function). This is the first occurrence we are aware of in the research in which a model contains self-connected neurons.
