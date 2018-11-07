@@ -44,7 +44,7 @@ Morgan Weaver\\
 \begin{abstract}
 
 %TODO: cite Rumelhart?
-Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. They also incur a greater computational burden than their feedforward counterparts. Attempts to circumvent these problems have generally led in the direction of increasingly complex architectures and training methodologies. We propose Diagnet, a simple RNN model which consists of three core components: 1) an efficient diagonal hidden-to-hidden recurrent matrix, 2) an absolute value activation function, and 3) the application of constraints to the recurrent parameter weights and gradient norms during training. Despite the decoupled and simplistic nature of Diagnet's hidden units, it significantly outperforms Long Short-Term Memory on the 1k version of the bAbI text understanding tasks from Facebook Research. Diagnet acheives higher test set results than LSTM on 16 out of the 20 tasks, by margins of up to 36\% accuracy.
+Recurrent neural networks are a challenge to train, in large part due to the well known problem of vanishing and exploding gradients. They also incur a greater computational burden than their feedforward counterparts. Attempts to circumvent these problems have generally led in the direction of increasingly complex architectures and training methodologies. We propose Diagnet, a simple RNN model which consists of four core components: 1) an efficient diagonal hidden-to-hidden recurrent matrix, 2) an absolute value activation function, 3) hyperbolic tangent input and output gates with tapped delay, and 4) the application of constraints to the recurrent parameter weights and gradient norms during training. Despite the decoupled and simplistic nature of Diagnet's hidden units, it significantly outperforms Long Short-Term Memory on the 1k version of the bAbI text understanding tasks from Facebook Research. Diagnet acheives higher test set results than LSTM on 19 out of the 20 tasks, by margins of up to 40\% accuracy.
 
 %TODO: mention efficient RTRL implementation in abstract?
   
@@ -54,7 +54,7 @@ Recurrent neural networks are a challenge to train, in large part due to the wel
 
 \section{Introduction}
 
-%TODO: probably should cite more recent examples, because the word "increasingly" implies recent stuff. No older than 2016
+%TODO: probably should cite more recent examples, because the word "increasingly" implies recent stuff
 %TODO: not sure we should refer to all RNNs as being "deep learning", as there are "deep" RNNs, but Diagnot is not.
 %TODO: cite automatic differentiation && black box optimization
 %TODO: look through things I've cited on Twitter
@@ -153,63 +153,54 @@ Number of operations scales linearly with hidden layer size.
 
 The absolute value activation function has a number of desirable properties: 
 
-%\begin{equation}
-%|x| =
-%\left\{
-%	\begin{array}{ll}
-%		\hfill x,  & \mbox{if } x \geq 0 \\
-%		-x, & \mbox{if } x < 0
-%	\end{array}
-%\right.\label{eq:1}
-%\end{equation}
+\begin{equation}
+|x| =
+\left\{
+	\begin{array}{ll}
+		\hfill x,  & \mbox{if } x \geq 0 \\
+		-x, & \mbox{if } x < 0
+	\end{array}
+\right.
+\end{equation}
 
-%\begin{equation}
-%\frac{d|x|}{dx} =
-%\frac{x}{|x|} =
-%\textrm{sgn}(x) =
-%\left\{
-%	\begin{array}{ll}
-%		\hfill 1,  & \mbox{if } x > 0 \\
-%		-1, & \mbox{if } x < 0
-%	\end{array}
-%\right.\label{eq:1}
-%\end{equation}
+\begin{equation}
+\frac{d|x|}{dx} =
+\frac{x}{|x|} =
+\left\{
+	\begin{array}{ll}
+		\hfill 1,  & \mbox{if } x > 0 \\
+		-1, & \mbox{if } x < 0
+	\end{array}
+\right.
+\end{equation}
 
 
-%\begin{equation}
-%\textrm{abs}(\mathbf{x}) = \left \langle |x_1|, |x_2|, \dots , |x_k| \right \rangle
-%\end{equation}
+\begin{equation}
+\textrm{abs}(\mathbf{x}) = \left \langle |x_1|, |x_2|, \dots , |x_k| \right \rangle
+\end{equation}
 
 %TODO: make this a footnote?
 %Note that abs() represents the vectorized version of the absolute value function.
 
 \begin{itemize}
 \item \textbf{Idempotent}: In the absence of new input, and with self-recurrent connections of 1.0, long term, high precision storage of information is possible without any specialized architectural design.
-
-%\begin{equation}
-%\textrm{abs}(\mathbf{x}) =
-%\textrm{abs}(\textrm{abs}(\mathbf{x}))
-%\end{equation}
-
-\item \textbf{Forward pass norm-preserving}: Application of the absolute value activation function preserves the length of its vector argument. This is true both element-wise \eqref{eq:1}, and for the vector as a whole \eqref{eq:2}.
-%\begin{equation}
-%\sqrt{{x_i}^{2}} = 
-%\sqrt{{ | x_i | }^{2}} = 
-%| x_i |\label{eq:1}
-%\end{equation}
-
+\begin{equation}
+\textrm{abs}(\mathbf{x}) =
+\textrm{abs}(\textrm{abs}(\mathbf{x}))
+\end{equation}
+\item \textbf{Forward pass norm-preserving}: Application of the vectorized absolute value activation function preserves the length of its vector argument. This is true both element-wise, and for the vector as a whole.
 \begin{equation}
 \sqrt{{x_i}^{2}} = 
-| x_i |\label{eq:1}
+\sqrt{{ | x_i | }^{2}} = 
+| x_i |
 \end{equation}
-
 \begin{equation}
 {\left \| \mathbf{x} \right \|}_2 = 
 \sqrt{{x_1}^{2} + \dots + {x_k}^2} = 
 \sqrt{{|x_1|}^{2} + \dots + {|x_k|}^2} =
-{\left \| \textrm{abs}( \mathbf{x} ) \right \|}_2\label{eq:2}
+{\left \| \textrm{abs}( \mathbf{x} ) \right \|}_2
 \end{equation}
-\item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors travelling backward through the unfolded computational graph enjoy the same norm-preserving benefits as do the activation vectors in the forward direction, as shown in \eqref{eq:3}.
+\item \textbf{Backward pass norm-preserving}: Similarly, corrective gradient vectors being passed backward through the computational graph enjoy the same norm-preserving benefits as the activation vectors in the forward direction.
 
 %\begin{equation}
 %\sqrt{{ \left [ \frac{\partial f}{\partial x_i} \right ] }^{2}} = 
@@ -218,7 +209,7 @@ The absolute value activation function has a number of desirable properties:
 
 \begin{equation}
 \sqrt{{ \left [ \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + { \left [ \frac{\partial f}{\partial x_k} \right ] }^{2}} = 
-\sqrt{{\left [ \textrm{sgn} \left ( x_1 \right ) \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + {\left [ \textrm{sgn} \left ( x_k \right ) \frac{\partial f}{\partial x_k} \right ] }^{2}}\label{eq:3}
+\sqrt{{\left [ \textrm{sgn} \left ( x_1 \right ) \frac{\partial f}{\partial x_1} \right ] }^{2} + \dots + {\left [ \textrm{sgn} \left ( x_k \right ) \frac{\partial f}{\partial x_k} \right ] }^{2}}
 \end{equation}
 
 \end{itemize}
@@ -251,15 +242,16 @@ Real-time recurrent learning (RTRL) is a online approach to training RNNs \citep
 However, Diagnet's decoupled hidden layer eliminates the exchange of any information between hidden neurons, and a fortunate side-effect is that there exists a significantly more memory efficient RTRL implementation.
 
 \begin{equation}
-{\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_t := \textrm{sgn}\left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) x_{j_t} + r_j {\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_{t-1}\label{eq:4}
+{\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_t := \textrm{sgn}\left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) x_{j_t} + r_j {\left[ {\frac{\partial f_j}{\partial w_j}} \right]}_{t-1}
 \end{equation}
 
 \begin{equation}
-{\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_t := \textrm{sgn}\left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) f_{j_{t-1}} + r_j {\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_{t-1}\label{eq:5}
+{\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_t := \textrm{sgn}\left( \left[ \sum_{i, j} x_{i_t} w_{ij }\right] + r_j f_{j_{t-1}} \right) f_{j_{t-1}} + r_j {\left[ {\frac{\partial f_j}{\partial r_j}} \right]}_{t-1}
 \end{equation}
 
 RTRL for fully connected RNNs requires the storage of $n^3 + mn^2$ partial derivatives, whereas for Diagnet that requirement is reduced to $n^2 + mn$.
 
+TODO: prove this works.
 
 %TODO: cite this https://dl.acm.org/citation.cfm?id=1351135
 
@@ -271,7 +263,7 @@ RTRL for fully connected RNNs requires the storage of $n^3 + mn^2$ partial deriv
 %\centering % used for centering table
 %\begin{tabular}{c c c c} % centered columns (4 columns)
 %\hline\hline %inserts double horizontal lines
-%Case & Method\#1 & Method\#2 & Method\#3 & Method\#4 \\ [0.5ex] % inserts table
+%Case & Method\#1 & Method\#2 & Method\#3 \\ [0.5ex] % inserts table
 %%heading
 %\hline % inserts single horizontal line
 %1 & 50 & 837 & 970 \\ % inserting body of the table
@@ -320,37 +312,36 @@ The first notable improvement as compared to a vanilla RNN was in the form of Me
 
 %The other significant family of approaches involve attentional mechanisms. Attentional mechanisms have met with great recent success, particularly in the domain of machine translation. Rather than having the neural network improve its ability to store information initially, attentional mechanisms all the model to go back over the sequential history of its inputs, often multiple times, conditioned on the type of output that is expected. In the case of machine translation, that conditioning will be driven by the next word in the sentence it is translating combined with what it has already produced. In the case of natural language understanding, it is the question being asked that conditions the attention to the relevant subset of facts in the preceding material. In essence, attention allows models to selectively reread do further processing on what has already been seen.
 \subsection{Results}
-
-Here we present Diagnet's results on the 20 babI question answering tasks.  Note that two sets of LSTM results are provided: the first, as reported in Weston et al. against bAbI v1.0, and the second, being a standard LSTM tested against bAbI v1.2.  The latter is a reflection of the correction of errors found in the original task set [REF].
+Here we present Diagnet's results on the 20 babI question answering tasks.  Note that two sets of LSTM results are provided: the first, as reported in Weston et al. against bAbI v1.0, and the second, being a standard LSTM tested against bAbI v1.2.  The latter is a reflection of the correction of errors found in the original task set[REF].
 
 \begin{table}[h]
 
 \centering
 \caption{bAbI test set accuracies}
-\begin{tabular}{|l|r|r|r|r|r|}
+\begin{tabular}{|l|r|r|r|r|}
 \hline
-Task & LSTM 1 & LSTM 2 & ReLU-Diagnet & Abs-Diagnet \\
+Task & LSTM 1 & LSTM 2 & Diagnet & +/- \\
 \hline
-Single Supporting Fact & 50 & 52.1  & 52.0 &  \textbf{72.1} \\
-Two Supporting Facts & 20 & \textbf{37.0}  & 33.6 & 31.8 \\
-Three Supporting Facts & 20 & 20.5 & 29.3 & \textbf{32.4} \\
-Two Arg. Relations & 61 & 62.9 & 66.9 & \textbf{98.9} \\
-Three Arg. Relations & 70 & 61.9 & 70.9 & \textbf{82.4}\\
-Yes/No Questions & 48 & 50.7 & 71.1 & \textbf{72.4} \\
-Counting & 49 & 78.9 & 75.0 & \textbf{82.1} \\
-Lists/Sets & 45 & \textbf{77.2} & 69.1 & 75.1 \\
-Simple Negation & 64 & 64.0 & 68.6 &\textbf{77.0} \\
-Indefinite Knowledge & 44 & 47.7 & 60.3 & \textbf{66.8} \\
-Basic Coreference & 72 & 74.9  & 72.2 & \textbf{81.3} \\
-Conjunction & 74 & 76.4 & 72.4 & \textbf{90.4} \\
-Compound Coreference & 94 & \textbf{94.4}  & 93.8 & 94.2 \\
-Time Reasoning & 27 & 34.8 & \textbf{41.3} & 39.6  \\
-Basic Deduction & 21 & 32.4 & 48.8 & \textbf{49.1} \\
-Basic Induction & 23 & \textbf{50.6} & 48.6 & 46.5 \\
-Positional Reasoning &  51 & 49.1 & \textbf{51.7} & 50.1  \\
-Size Reasoning & 52 & 90.8 & 89.6 & \textbf{92.0}  \\
-Path Finding & 8 & 9.0 & 8.1 & \textbf{12.4} \\
-Agent's Motivations & 91 & 90.7 & \textbf{96.7} & 96.3  \\
+Single Supporting Fact & 50 &  & \textbf{72.1} & +22.1 \\
+Two Supporting Facts & 20 &  &\textbf{31.8} & +11.8 \\
+Three Supporting Facts & 20 &  & \textbf{32.4} & +12.4 \\
+Two Arg. Relations & 61 &  & \textbf{98.9} & +37.9 \\
+Three Arg. Relations & 70 & & \textbf{82.4} & +12.4 \\
+Yes/No Questions & 48 & & \textbf{72.4} & +24.4 \\
+Counting & 49 &  & \textbf{82.1} & +33.1 \\
+Lists/Sets & 45 & & \textbf{75.1} & +30.1 \\
+Simple Negation & 64 &  &\textbf{77}.0 & +13.0 \\
+Indefinite Knowledge & 44 & & \textbf{66.8} & +22.8 \\
+Basic Coreference & 72 &  & \textbf{81.3} & +9.3 \\
+Conjunction & 74 &  & \textbf{90.4} & +6.4 \\
+Compound Coreference & 94 &  & \textbf{94.2} & +0.2 \\
+Time Reasoning & 27 &  & \textbf{39.6} & +12.6 \\
+Basic Deduction & 21 &  & \textbf{49.1} & +28.1 \\
+Basic Induction & 23 &  & \textbf{46.5} & +23.5 \\
+Positional Reasoning &  \textbf{51} &  & 50.1 & -0.9 \\
+Size Reasoning & 52 &  & \textbf{92.0} & +40.0 \\
+Path Finding & 8 &  & \textbf{12.4} & +4.4 \\
+Agent's Motivations & 91 &  & \textbf{96.3} & +5.3 \\
 \hline
 
 \end{tabular}
@@ -376,7 +367,7 @@ Note that we are not comparing Diagnet directly to any of the aforementioned “
 %It is important to consider a new deep learning architecture with an awareness of existing models.  We offer a brief and by no means comprehensive overview of existing RNN designs herein.  
 %Some of the earliest work consists of Hopfield Networks, developed by Hopfield in 1982.  Subsequently, Schmidhuber \citet{6795261} developed the Neural History Compressor and was able to preserve information over time steps, while compressing information.  
 
-In 1991 Fallman developed the Recurrent Cascade Correlation Algorithm \citet{Fahlman1990TheRC}, in which one single, previously trained hidden unit is added to the network at a time, with incoming weights frozen as the incoming unit is connected in a feed-forward manner with the previous input and hidden units. Each new hidden neuron must be maximally correlated with current remaining error per step.  
+In 1991 Fallman developed the Recurrent Cascade Correlation Algorithm \citet{Fahlman1990TheRC}, in which a single, previously trained hidden unit is added to the network at a time, with incoming weights frozen as the incoming unit is connected in a feed-forward manner with the previous input and hidden units. Each new hidden neuron must be maximally correlated with current remaining error per step.  
 Which used saturated functions as opposed to the non-saturating absolute value function.  At that point in time, the design was not feasible for certain tasks like sequential parity.  proved not useful for certain grammars like seq parity (using saturating, not absolute value function). This is the first occurrence we are aware of in the research in which a model contains self-connected neurons.
 %Truncated backprop at the time bc feasible. 
 
